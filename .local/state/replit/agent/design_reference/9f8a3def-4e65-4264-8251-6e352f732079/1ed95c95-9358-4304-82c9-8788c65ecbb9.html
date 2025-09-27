@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pool Design Consultant - AI-Driven Pool Design Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                    chart: {
+                        "1": "var(--chart-1)",
+                        "2": "var(--chart-2)",
+                        "3": "var(--chart-3)",
+                        "4": "var(--chart-4)",
+                        "5": "var(--chart-5)",
+                    }
+                },
+                fontFamily: {
+                    sans: ["Inter", "system-ui", "sans-serif"],
+                }
+            }
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(0 0% 100%);
+            --foreground: hsl(222.2 84% 4.9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222.2 84% 4.9%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222.2 84% 4.9%);
+            --primary: hsl(210 60% 40%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(210 40% 96%);
+            --secondary-foreground: hsl(222.2 84% 4.9%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215.4 16.3% 46.9%);
+            --accent: hsl(18 70% 65%);
+            --accent-foreground: hsl(222.2 84% 4.9%);
+            --destructive: hsl(0 84.2% 60.2%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214.3 31.8% 91.4%);
+            --input: hsl(214.3 31.8% 91.4%);
+            --ring: hsl(210 60% 40%);
+            --radius: 0.5rem;
+            --chart-1: hsl(12 76% 61%);
+            --chart-2: hsl(173 58% 39%);
+            --chart-3: hsl(197 37% 24%);
+            --chart-4: hsl(43 74% 66%);
+            --chart-5: hsl(27 87% 67%);
+        }
+
+        .dark {
+            --background: hsl(222.2 84% 4.9%);
+            --foreground: hsl(210 40% 98%);
+            --card: hsl(222.2 84% 4.9%);
+            --card-foreground: hsl(210 40% 98%);
+            --popover: hsl(222.2 84% 4.9%);
+            --popover-foreground: hsl(210 40% 98%);
+            --primary: hsl(210 40% 98%);
+            --primary-foreground: hsl(222.2 84% 4.9%);
+            --secondary: hsl(217.2 32.6% 17.5%);
+            --secondary-foreground: hsl(210 40% 98%);
+            --muted: hsl(217.2 32.6% 17.5%);
+            --muted-foreground: hsl(215 20.2% 65.1%);
+            --accent: hsl(217.2 32.6% 17.5%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 62.8% 30.6%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(217.2 32.6% 17.5%);
+            --input: hsl(217.2 32.6% 17.5%);
+            --ring: hsl(212.7 26.8% 83.9%);
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
+        .gradient-primary {
+            background: linear-gradient(135deg, #2c5ba8 0%, #ff7849 100%);
+        }
+
+        .gradient-soft {
+            background: linear-gradient(135deg, #f8fafc 0%, #fff7ed 100%);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #2c5ba8 0%, #ff7849 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-background text-foreground">
+    <!-- @COMPONENT: Header [Fixed navigation with logo and menu] -->
+    <header class="fixed top-0 w-full z-50 gradient-primary shadow-lg">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                        <i class="fas fa-swimming-pool text-white text-xl"></i>
+                    </div>
+                    <div class="text-white">
+                        <h1 class="text-xl font-bold" data-mock="true">AquaDesign</h1>
+                        <p class="text-xs opacity-90" data-mock="true">Pool Design Experts</p>
+                    </div>
+                </div>
+                
+                <ul class="hidden md:flex items-center space-x-8">
+                    <li><a href="#services" class="text-white hover:text-orange-200 transition-colors duration-300 font-medium" data-mock="true">Services</a></li>
+                    <li><a href="#portfolio" class="text-white hover:text-orange-200 transition-colors duration-300 font-medium" data-mock="true">Portfolio</a></li>
+                    <li><a href="#packages" class="text-white hover:text-orange-200 transition-colors duration-300 font-medium" data-mock="true">Packages</a></li>
+                    <li><a href="#calculator" class="text-white hover:text-orange-200 transition-colors duration-300 font-medium" data-mock="true">Calculator</a></li>
+                    <li><a href="#contact" class="text-white hover:text-orange-200 transition-colors duration-300 font-medium" data-mock="true">Contact</a></li>
+                </ul>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="#contact" class="hidden sm:inline-block bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full hover:bg-white/30 transition-all duration-300 font-medium" data-mock="true">
+                        Get Quote
+                    </a>
+                    <button class="md:hidden text-white" data-event="click:toggleMobileMenu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <!-- @COMPONENT: Hero [Main hero section with CTAs] -->
+    <section class="gradient-primary text-white pt-24 pb-16 min-h-screen flex items-center">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="float-animation mb-8">
+                    <i class="fas fa-water text-6xl mb-6 opacity-80"></i>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight" data-mock="true">
+                    Transform Your
+                    <span class="block text-gradient bg-gradient-to-r from-orange-300 to-orange-100 bg-clip-text text-transparent">Dream Pool</span>
+                    Into Reality
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed" data-mock="true">
+                    AI-powered pool design meets expert craftsmanship. Get personalized 3D designs, accurate cost estimates, and professional consultation—all in one place.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                    <a href="#ai-quiz" class="bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transform hover:-translate-y-1 transition-all duration-300 shadow-lg" data-mock="true">
+                        <i class="fas fa-robot mr-2"></i>Start AI Design Quiz
+                    </a>
+                    <a href="#portfolio" class="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300" data-mock="true">
+                        <i class="fas fa-play mr-2"></i>View Our Work
+                    </a>
+                </div>
+
+                <!-- Trust Indicators -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <div class="text-2xl font-bold" data-mock="true">500+</div>
+                        <div class="text-sm opacity-80" data-mock="true">Pools Designed</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <div class="text-2xl font-bold" data-mock="true">98%</div>
+                        <div class="text-sm opacity-80" data-mock="true">Client Satisfaction</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <div class="text-2xl font-bold" data-mock="true">15+</div>
+                        <div class="text-sm opacity-80" data-mock="true">Years Experience</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <div class="text-2xl font-bold" data-mock="true">24/7</div>
+                        <div class="text-sm opacity-80" data-mock="true">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Hero -->
+
+    <!-- @COMPONENT: TrustBar [Client testimonials and ratings] -->
+    <section class="gradient-soft py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-8">
+                <p class="text-lg text-muted-foreground mb-4" data-mock="true">Trusted by homeowners across the country</p>
+                <div class="flex justify-center items-center space-x-6 flex-wrap gap-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="flex text-orange-400">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <span class="font-bold text-lg" data-mock="true">4.9/5</span>
+                        <span class="text-muted-foreground" data-mock="true">(1,247 reviews)</span>
+                    </div>
+                    <div class="text-muted-foreground">|</div>
+                    <div class="font-semibold text-blue-600" data-mock="true">Google Reviews</div>
+                    <div class="text-muted-foreground">|</div>
+                    <div class="font-semibold text-blue-600" data-mock="true">Better Business Bureau A+</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: TrustBar -->
+
+    <!-- @COMPONENT: PackageHub [Service packages selection] -->
+    <section id="packages" class="py-20 bg-background">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient" data-mock="true">Choose Your Design Package</h2>
+                <p class="text-xl text-muted-foreground max-w-2xl mx-auto" data-mock="true">
+                    From basic consultations to complete design and build packages, we have the right solution for your project.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-12">
+                <!-- Package 1: Basic -->
+                <div class="bg-card border-2 border-border rounded-xl p-8 text-center hover:border-primary hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="text-4xl mb-4">
+                        <i class="fas fa-drafting-compass text-blue-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-foreground" data-mock="true">Basic Design</h3>
+                    <div class="text-4xl font-bold text-orange-500 mb-4" data-mock="true">$299</div>
+                    <p class="text-muted-foreground mb-6" data-mock="true">Perfect for getting started with professional pool design concepts</p>
+                    <ul class="text-left space-y-3 mb-8">
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            2D Pool Layout Design
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Basic Material Recommendations
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Cost Estimation
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            1 Revision Included
+                        </li>
+                    </ul>
+                    <button class="w-full bg-primary text-primary-foreground py-3 px-6 rounded-lg font-bold hover:bg-primary/90 transition-colors" data-mock="true">
+                        Select Package
+                    </button>
+                </div>
+
+                <!-- Package 2: Premium (Popular) -->
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-400 rounded-xl p-8 text-center relative hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-bold" data-mock="true">Most Popular</span>
+                    </div>
+                    <div class="text-4xl mb-4">
+                        <i class="fas fa-magic text-orange-500"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-foreground" data-mock="true">Premium Design</h3>
+                    <div class="text-4xl font-bold text-orange-500 mb-4" data-mock="true">$699</div>
+                    <p class="text-muted-foreground mb-6" data-mock="true">Complete design package with 3D visualization and detailed plans</p>
+                    <ul class="text-left space-y-3 mb-8">
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            3D Pool Design & Visualization
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Detailed Construction Plans
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Material & Equipment Specs
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            3 Design Revisions
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            AI-Powered Recommendations
+                        </li>
+                    </ul>
+                    <button class="w-full bg-orange-500 text-white py-3 px-6 rounded-lg font-bold hover:bg-orange-600 transition-colors" data-mock="true">
+                        Select Package
+                    </button>
+                </div>
+
+                <!-- Package 3: Complete -->
+                <div class="bg-card border-2 border-border rounded-xl p-8 text-center hover:border-primary hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="text-4xl mb-4">
+                        <i class="fas fa-crown text-blue-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-foreground" data-mock="true">Complete Build</h3>
+                    <div class="text-4xl font-bold text-orange-500 mb-4" data-mock="true">$1,299</div>
+                    <p class="text-muted-foreground mb-6" data-mock="true">Full-service package from design to construction management</p>
+                    <ul class="text-left space-y-3 mb-8">
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Everything in Premium
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Contractor Matching Service
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Project Management Support
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Unlimited Revisions
+                        </li>
+                        <li class="flex items-center" data-mock="true">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            Priority Support
+                        </li>
+                    </ul>
+                    <button class="w-full bg-primary text-primary-foreground py-3 px-6 rounded-lg font-bold hover:bg-primary/90 transition-colors" data-mock="true">
+                        Select Package
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Quiz CTA -->
+            <div id="ai-quiz" class="gradient-primary text-white rounded-xl p-8 text-center max-w-4xl mx-auto">
+                <h3 class="text-3xl font-bold mb-4" data-mock="true">Not Sure Which Package is Right for You?</h3>
+                <p class="text-xl mb-6 opacity-90" data-mock="true">Take our AI-powered quiz to get personalized recommendations based on your needs and budget.</p>
+                <button class="bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-colors" data-mock="true">
+                    <i class="fas fa-robot mr-2"></i>Start AI Quiz (2 minutes)
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: PackageHub -->
+
+    <!-- @COMPONENT: ServicesGrid [Different service offerings] -->
+    <section id="services" class="py-20 gradient-soft">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient" data-mock="true">Our Design Services</h2>
+                <p class="text-xl text-muted-foreground max-w-2xl mx-auto" data-mock="true">
+                    Comprehensive pool design solutions powered by cutting-edge AI technology and expert craftsmanship.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Service 1 -->
+                <div class="bg-card rounded-xl p-6 text-center border-2 border-border hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-foreground" data-mock="true">3D Design</h4>
+                    <p class="text-muted-foreground" data-mock="true">Photorealistic 3D renderings that bring your pool vision to life with stunning detail.</p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-card rounded-xl p-6 text-center border-2 border-border hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="text-5xl text-orange-500 mb-4">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-foreground" data-mock="true">AI Optimization</h4>
+                    <p class="text-muted-foreground" data-mock="true">Smart algorithms analyze your space and preferences for optimal pool design solutions.</p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-card rounded-xl p-6 text-center border-2 border-border hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-foreground" data-mock="true">Cost Analysis</h4>
+                    <p class="text-muted-foreground" data-mock="true">Detailed cost breakdowns and budget optimization to maximize your investment.</p>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-card rounded-xl p-6 text-center border-2 border-border hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="text-5xl text-orange-500 mb-4">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-foreground" data-mock="true">Technical Plans</h4>
+                    <p class="text-muted-foreground" data-mock="true">Professional construction drawings and specifications for contractors to follow.</p>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="bg-card rounded-xl p-6 text-center border-2 border-border hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-foreground" data-mock="true">Eco Design</h4>
+                    <p class="text-muted-foreground" data-mock="true">Sustainable and energy-efficient pool designs that reduce environmental impact.</p>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="bg-card rounded-xl p-6 text-center border-2 border-border hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="text-5xl text-orange-500 mb-4">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-foreground" data-mock="true">Virtual Reality</h4>
+                    <p class="text-muted-foreground" data-mock="true">Immersive VR experiences to walk through your pool design before construction.</p>
+                </div>
+
+                <!-- Service 7 -->
+                <div class="bg-card rounded-xl p-6 text-center border-2 border-border hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="text-5xl text-blue-600 mb-4">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-foreground" data-mock="true">Contractor Network</h4>
+                    <p class="text-muted-foreground" data-mock="true">Access to our vetted network of professional pool contractors nationwide.</p>
+                </div>
+
+                <!-- Service 8 -->
+                <div class="bg-card rounded-xl p-6 text-center border-2 border-border hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="text-5xl text-orange-500 mb-4">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3 text-foreground" data-mock="true">24/7 Support</h4>
+                    <p class="text-muted-foreground" data-mock="true">Round-the-clock customer support throughout your entire design process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: ServicesGrid -->
+
+    <!-- @COMPONENT: Portfolio [Showcase of completed projects] -->
+    <section id="portfolio" class="py-20 bg-background">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient" data-mock="true">Featured Projects</h2>
+                <p class="text-xl text-muted-foreground max-w-2xl mx-auto" data-mock="true">
+                    Explore our portfolio of stunning pool designs created for homeowners across the country.
+                </p>
+            </div>
+
+            <!-- Portfolio Filters -->
+            <div class="flex justify-center mb-12 flex-wrap gap-4">
+                <button class="px-6 py-2 rounded-full bg-orange-500 text-white font-medium hover:bg-orange-600 transition-colors" data-filter="all" data-mock="true">All Projects</button>
+                <button class="px-6 py-2 rounded-full bg-muted text-muted-foreground font-medium hover:bg-orange-500 hover:text-white transition-colors" data-filter="residential" data-mock="true">Residential</button>
+                <button class="px-6 py-2 rounded-full bg-muted text-muted-foreground font-medium hover:bg-orange-500 hover:text-white transition-colors" data-filter="luxury" data-mock="true">Luxury</button>
+                <button class="px-6 py-2 rounded-full bg-muted text-muted-foreground font-medium hover:bg-orange-500 hover:text-white transition-colors" data-filter="natural" data-mock="true">Natural</button>
+                <button class="px-6 py-2 rounded-full bg-muted text-muted-foreground font-medium hover:bg-orange-500 hover:text-white transition-colors" data-filter="modern" data-mock="true">Modern</button>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <!-- @MAP: portfolioItems.map(item => ( -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="portfolio-item bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="luxury">
+                    <!-- Modern luxury pool with infinity edge overlooking a city skyline -->
+                    <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Modern luxury infinity pool with city view" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground" data-mock="true">Beverly Hills Infinity Pool</h3>
+                        <p class="text-muted-foreground mb-4" data-mock="true">Luxury infinity pool with panoramic city views and integrated spa features.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-orange-500 font-medium" data-mock="true">$85,000 - $120,000</span>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium" data-mock="true">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="natural">
+                    <!-- Natural stone pool surrounded by lush tropical landscaping -->
+                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Natural stone pool with tropical landscaping" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground" data-mock="true">Tropical Paradise Pool</h3>
+                        <p class="text-muted-foreground mb-4" data-mock="true">Natural stone pool design with waterfall features and tropical landscaping.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-orange-500 font-medium" data-mock="true">$65,000 - $95,000</span>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium" data-mock="true">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="modern">
+                    <!-- Sleek modern rectangular pool with clean geometric lines -->
+                    <img src="https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Modern geometric pool with clean lines" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground" data-mock="true">Contemporary Geometric Pool</h3>
+                        <p class="text-muted-foreground mb-4" data-mock="true">Minimalist design with geometric shapes and integrated LED lighting system.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-orange-500 font-medium" data-mock="true">$55,000 - $75,000</span>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium" data-mock="true">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="residential">
+                    <!-- Family-friendly backyard pool with play features -->
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Family backyard pool with water features" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground" data-mock="true">Family Backyard Oasis</h3>
+                        <p class="text-muted-foreground mb-4" data-mock="true">Perfect family pool with shallow play area and integrated water features.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-orange-500 font-medium" data-mock="true">$35,000 - $55,000</span>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium" data-mock="true">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="luxury">
+                    <!-- Resort-style pool with swim-up bar and cabana -->
+                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Resort-style pool with swim-up bar" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground" data-mock="true">Resort-Style Retreat</h3>
+                        <p class="text-muted-foreground mb-4" data-mock="true">Luxury resort-style pool with swim-up bar and entertainment area.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-orange-500 font-medium" data-mock="true">$95,000 - $150,000</span>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium" data-mock="true">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-item bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="modern">
+                    <!-- Modern lap pool with clean architectural lines -->
+                    <img src="https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" alt="Modern lap pool with architectural design" class="w-full h-64 object-cover" />
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-foreground" data-mock="true">Architectural Lap Pool</h3>
+                        <p class="text-muted-foreground mb-4" data-mock="true">Sleek lap pool design perfect for fitness and modern aesthetics.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-orange-500 font-medium" data-mock="true">$45,000 - $65,000</span>
+                            <button class="text-blue-600 hover:text-blue-800 font-medium" data-mock="true">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_MAP )) -->
+
+            <div class="text-center mt-12">
+                <button class="bg-primary text-primary-foreground px-8 py-3 rounded-full font-bold hover:bg-primary/90 transition-colors" data-mock="true">
+                    View All Projects
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Portfolio -->
+
+    <!-- @COMPONENT: CostCalculator [Interactive cost estimation tool] -->
+    <section id="calculator" class="py-20 gradient-primary text-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6" data-mock="true">Pool Cost Calculator</h2>
+                <p class="text-xl opacity-90 max-w-2xl mx-auto" data-mock="true">
+                    Get an instant estimate for your dream pool with our AI-powered cost calculator.
+                </p>
+            </div>
+
+            <div class="bg-white text-gray-900 rounded-xl p-8 max-w-4xl mx-auto">
+                <!-- @STATE: calculatorData:object = {} -->
+                <!-- @FUNCTIONALITY: This calculator should provide real-time cost estimates based on user selections -->
+                <form class="grid grid-cols-1 md:grid-cols-2 gap-6" data-form="cost-calculator">
+                    <div>
+                        <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Pool Size</label>
+                        <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="calculatorData.size">
+                            <option value="" data-mock="true">Select pool size</option>
+                            <option value="small" data-mock="true">Small (12' x 24')</option>
+                            <option value="medium" data-mock="true">Medium (16' x 32')</option>
+                            <option value="large" data-mock="true">Large (20' x 40')</option>
+                            <option value="custom" data-mock="true">Custom Size</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Pool Type</label>
+                        <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="calculatorData.type">
+                            <option value="" data-mock="true">Select pool type</option>
+                            <option value="rectangular" data-mock="true">Rectangular</option>
+                            <option value="freeform" data-mock="true">Freeform</option>
+                            <option value="kidney" data-mock="true">Kidney</option>
+                            <option value="lap" data-mock="true">Lap Pool</option>
+                            <option value="infinity" data-mock="true">Infinity Pool</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Material</label>
+                        <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="calculatorData.material">
+                            <option value="" data-mock="true">Select material</option>
+                            <option value="vinyl" data-mock="true">Vinyl Liner</option>
+                            <option value="fiberglass" data-mock="true">Fiberglass</option>
+                            <option value="concrete" data-mock="true">Concrete/Gunite</option>
+                            <option value="natural-stone" data-mock="true">Natural Stone</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Features</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2 text-orange-500" data-bind="calculatorData.features.heating" data-mock="true">
+                                <span data-mock="true">Pool Heating (+$3,500)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2 text-orange-500" data-bind="calculatorData.features.lighting" data-mock="true">
+                                <span data-mock="true">LED Lighting (+$1,800)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2 text-orange-500" data-bind="calculatorData.features.waterfall" data-mock="true">
+                                <span data-mock="true">Waterfall Feature (+$2,500)</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2 text-orange-500" data-bind="calculatorData.features.spa" data-mock="true">
+                                <span data-mock="true">Integrated Spa (+$8,000)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Location</label>
+                        <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="calculatorData.location">
+                            <option value="" data-mock="true">Select your state</option>
+                            <option value="california" data-mock="true">California</option>
+                            <option value="florida" data-mock="true">Florida</option>
+                            <option value="texas" data-mock="true">Texas</option>
+                            <option value="arizona" data-mock="true">Arizona</option>
+                            <option value="nevada" data-mock="true">Nevada</option>
+                            <option value="other" data-mock="true">Other State</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Timeline</label>
+                        <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="calculatorData.timeline">
+                            <option value="" data-mock="true">Select timeline</option>
+                            <option value="immediate" data-mock="true">Ready to start immediately</option>
+                            <option value="3months" data-mock="true">Within 3 months</option>
+                            <option value="6months" data-mock="true">Within 6 months</option>
+                            <option value="planning" data-mock="true">Just planning ahead</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="mt-8 p-6 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border-2 border-orange-200">
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold text-blue-600 mb-2" data-mock="true">Estimated Cost Range</h3>
+                        <div class="text-4xl font-bold text-orange-500 mb-2" data-bind="calculatorData.estimatedCost" data-mock="true">$45,000 - $65,000</div>
+                        <p class="text-gray-600 text-sm" data-mock="true">*Estimate based on current selections. Final pricing may vary.</p>
+                        <button class="mt-4 bg-orange-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-orange-600 transition-colors" data-event="click:generateDetailedEstimate" data-mock="true">
+                            Get Detailed Estimate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: CostCalculator -->
+
+    <!-- @COMPONENT: Testimonials [Client reviews and success stories] -->
+    <section class="py-20 bg-background">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient" data-mock="true">What Our Clients Say</h2>
+                <p class="text-xl text-muted-foreground max-w-2xl mx-auto" data-mock="true">
+                    Don't just take our word for it. Hear from satisfied homeowners who transformed their backyards.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Testimonial 1 -->
+                <div class="bg-card rounded-xl p-8 border-2 border-border hover:border-primary transition-all duration-300 transform hover:-translate-y-1 shadow-lg">
+                    <div class="flex text-orange-400 mb-4">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-muted-foreground mb-6 italic" data-mock="true">"The AI-powered design process was incredible. They captured exactly what we envisioned and delivered a pool that exceeded our expectations. The whole family loves it!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-orange-200 rounded-full flex items-center justify-center mr-4">
+                            <span class="font-bold text-orange-600" data-mock="true">SM</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-foreground" data-mock="true">Sarah & Mike Johnson</h4>
+                            <p class="text-sm text-muted-foreground" data-mock="true">Beverly Hills, CA</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-card rounded-xl p-8 border-2 border-border hover:border-primary transition-all duration-300 transform hover:-translate-y-1 shadow-lg">
+                    <div class="flex text-orange-400 mb-4">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-muted-foreground mb-6 italic" data-mock="true">"From design to completion, the process was seamless. The 3D visualizations helped us make informed decisions, and the final result is absolutely stunning."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center mr-4">
+                            <span class="font-bold text-blue-600" data-mock="true">RK</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-foreground" data-mock="true">Robert Kim</h4>
+                            <p class="text-sm text-muted-foreground" data-mock="true">Austin, TX</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-card rounded-xl p-8 border-2 border-border hover:border-primary transition-all duration-300 transform hover:-translate-y-1 shadow-lg">
+                    <div class="flex text-orange-400 mb-4">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-muted-foreground mb-6 italic" data-mock="true">"Professional, responsive, and incredibly talented. They turned our small backyard into a resort-like oasis. Best investment we've ever made!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-200 rounded-full flex items-center justify-center mr-4">
+                            <span class="font-bold text-green-600" data-mock="true">LC</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-foreground" data-mock="true">Lisa Chen</h4>
+                            <p class="text-sm text-muted-foreground" data-mock="true">Phoenix, AZ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: Testimonials -->
+
+    <!-- @COMPONENT: ContactSection [Contact forms and consultation booking] -->
+    <section id="contact" class="py-20 gradient-soft">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gradient" data-mock="true">Ready to Start Your Pool Project?</h2>
+                <p class="text-xl text-muted-foreground max-w-2xl mx-auto" data-mock="true">
+                    Get in touch with our pool design experts for a free consultation and personalized quote.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+                <!-- Contact Form -->
+                <div class="bg-card rounded-xl p-8 border-2 border-border shadow-lg">
+                    <h3 class="text-2xl font-bold mb-6 text-foreground" data-mock="true">Free Consultation</h3>
+                    <!-- @STATE: contactForm:object = {} -->
+                    <form class="space-y-6" data-form="contact-form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">First Name *</label>
+                                <input type="text" required class="w-full p-3 border-2 border-border rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="contactForm.firstName" data-mock="true" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Last Name *</label>
+                                <input type="text" required class="w-full p-3 border-2 border-border rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="contactForm.lastName" data-mock="true" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Email Address *</label>
+                            <input type="email" required class="w-full p-3 border-2 border-border rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="contactForm.email" data-mock="true" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Phone Number</label>
+                            <input type="tel" class="w-full p-3 border-2 border-border rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="contactForm.phone" data-mock="true" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Project Location</label>
+                            <input type="text" placeholder="City, State" class="w-full p-3 border-2 border-border rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="contactForm.location" data-mock="true" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Project Details</label>
+                            <textarea rows="4" class="w-full p-3 border-2 border-border rounded-lg focus:border-orange-500 focus:outline-none transition-colors resize-none" placeholder="Tell us about your dream pool..." data-bind="contactForm.details" data-mock="true"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-blue-600 mb-2" data-mock="true">Budget Range</label>
+                            <select class="w-full p-3 border-2 border-border rounded-lg focus:border-orange-500 focus:outline-none transition-colors" data-bind="contactForm.budget">
+                                <option value="" data-mock="true">Select budget range</option>
+                                <option value="25-50k" data-mock="true">$25,000 - $50,000</option>
+                                <option value="50-75k" data-mock="true">$50,000 - $75,000</option>
+                                <option value="75-100k" data-mock="true">$75,000 - $100,000</option>
+                                <option value="100k+" data-mock="true">$100,000+</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full gradient-primary text-white py-4 px-6 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity" data-event="click:submitContactForm" data-mock="true">
+                            <i class="fas fa-paper-plane mr-2"></i>Get My Free Consultation
+                        </button>
+
+                        <p class="text-xs text-muted-foreground text-center" data-mock="true">
+                            * Required fields. We respect your privacy and will never share your information.
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="space-y-8">
+                    <!-- Contact Info Card -->
+                    <div class="bg-card rounded-xl p-8 border-2 border-border shadow-lg">
+                        <h3 class="text-2xl font-bold mb-6 text-foreground" data-mock="true">Get In Touch</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-phone text-orange-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-foreground" data-mock="true">Phone</h4>
+                                    <p class="text-muted-foreground" data-mock="true">(555) 123-POOL</p>
+                                    <p class="text-sm text-muted-foreground" data-mock="true">Mon-Sun 7AM-9PM</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-envelope text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-foreground" data-mock="true">Email</h4>
+                                    <p class="text-muted-foreground" data-mock="true">hello@aquadesignpools.com</p>
+                                    <p class="text-sm text-muted-foreground" data-mock="true">We respond within 2 hours</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-map-marker-alt text-green-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-foreground" data-mock="true">Service Areas</h4>
+                                    <p class="text-muted-foreground" data-mock="true">California, Texas, Florida, Arizona</p>
+                                    <p class="text-sm text-muted-foreground" data-mock="true">And expanding nationwide</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Emergency Contact -->
+                    <div class="gradient-primary text-white rounded-xl p-6 text-center">
+                        <h4 class="text-xl font-bold mb-2" data-mock="true">Need Immediate Help?</h4>
+                        <p class="mb-4 opacity-90" data-mock="true">Our design experts are standing by for emergency consultations</p>
+                        <a href="tel:5551234567" class="bg-white text-blue-600 px-6 py-3 rounded-full font-bold inline-block hover:bg-gray-100 transition-colors" data-mock="true">
+                            <i class="fas fa-phone mr-2"></i>Call Now: (555) 123-4567
+                        </a>
+                    </div>
+
+                    <!-- Social Proof -->
+                    <div class="bg-card rounded-xl p-6 border-2 border-border text-center">
+                        <h4 class="text-lg font-bold mb-3 text-foreground" data-mock="true">Join 2,500+ Happy Customers</h4>
+                        <div class="flex justify-center space-x-4 text-2xl">
+                            <a href="#" class="text-blue-600 hover:text-blue-800 transition-colors" data-mock="true"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="text-blue-400 hover:text-blue-600 transition-colors" data-mock="true"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-pink-500 hover:text-pink-700 transition-colors" data-mock="true"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-red-600 hover:text-red-800 transition-colors" data-mock="true"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- @END_COMPONENT: ContactSection -->
+
+    <!-- @COMPONENT: Footer [Company information and links] -->
+    <footer class="bg-primary text-primary-foreground py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Company Info -->
+                <div class="md:col-span-1">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                            <i class="fas fa-swimming-pool text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold" data-mock="true">AquaDesign</h1>
+                            <p class="text-xs opacity-90" data-mock="true">Pool Design Experts</p>
+                        </div>
+                    </div>
+                    <p class="text-sm opacity-80 mb-4" data-mock="true">
+                        Leading AI-powered pool design consultancy transforming backyards across America with innovative technology and expert craftsmanship.
+                    </p>
+                    <div class="flex space-x-3">
+                        <a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true"><i class="fab fa-twitter text-xl"></i></a>
+                        <a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true"><i class="fab fa-linkedin text-xl"></i></a>
+                    </div>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-mock="true">Services</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">3D Pool Design</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">AI Design Quiz</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Cost Calculator</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Virtual Reality Tours</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Construction Plans</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Contractor Network</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-mock="true">Company</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">About Us</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Our Process</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Portfolio</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Testimonials</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Careers</a></li>
+                        <li><a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4" data-mock="true">Contact</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start space-x-2">
+                            <i class="fas fa-phone mt-1 opacity-80"></i>
+                            <div>
+                                <p data-mock="true">(555) 123-POOL</p>
+                                <p class="opacity-70 text-xs" data-mock="true">Mon-Sun 7AM-9PM</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <i class="fas fa-envelope mt-1 opacity-80"></i>
+                            <p data-mock="true">hello@aquadesignpools.com</p>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <i class="fas fa-map-marker-alt mt-1 opacity-80"></i>
+                            <div>
+                                <p data-mock="true">Serving CA, TX, FL, AZ</p>
+                                <p class="opacity-70 text-xs" data-mock="true">Expanding nationwide</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/20 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center text-sm">
+                    <div class="mb-4 md:mb-0">
+                        <p class="opacity-80" data-mock="true">&copy; 2024 AquaDesign Pool Consultants. All rights reserved.</p>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Privacy Policy</a>
+                        <a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Terms of Service</a>
+                        <a href="#" class="text-primary-foreground/80 hover:text-white transition-colors" data-mock="true">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <script>
+        // TODO: Implement business logic, API calls, and state management
+        (function() {
+            // Portfolio filtering functionality
+            const filterButtons = document.querySelectorAll('[data-filter]');
+            const portfolioItems = document.querySelectorAll('.portfolio-item');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Update active button
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('bg-orange-500', 'text-white');
+                        btn.classList.add('bg-muted', 'text-muted-foreground');
+                    });
+                    
+                    this.classList.remove('bg-muted', 'text-muted-foreground');
+                    this.classList.add('bg-orange-500', 'text-white');
+                    
+                    // Filter items
+                    portfolioItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Cost calculator functionality placeholder
+            const calculatorInputs = document.querySelectorAll('[data-form="cost-calculator"] select, [data-form="cost-calculator"] input');
+            calculatorInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    // TODO: Implement real-time cost calculation logic
+                    console.log('Calculator input changed:', this.name, this.value);
+                });
+            });
+            
+            // Form submission handlers
+            const contactForm = document.querySelector('[data-form="contact-form"]');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // TODO: Implement form validation and submission
+                    console.log('Contact form submitted');
+                });
+            }
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

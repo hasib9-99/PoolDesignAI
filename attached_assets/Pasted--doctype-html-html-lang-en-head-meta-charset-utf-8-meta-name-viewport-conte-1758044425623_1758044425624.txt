@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Pool Materials Showroom</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;background:#f8f9fb;color:#111}
+    header{padding:28px 20px;background:#0a2540;color:#fff}
+    header h1{margin:0;font-size:28px}
+    header p{margin:6px 0 0;opacity:.9}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+    .filters input,.filters select{padding:10px 12px;border:1px solid #ddd;border-radius:10px;background:#fff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+    .card{background:#fff;border:1px solid #e6e6e6;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .thumb{aspect-ratio:4/3;background:#eee;object-fit:cover;width:100%}
+    .content{padding:14px}
+    .title{font-weight:700;margin:0 0 6px}
+    .meta{font-size:13px;color:#555;margin-bottom:12px}
+    .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+    .tag{font-size:12px;background:#f0f3f7;border-radius:999px;padding:4px 8px;border:1px solid #dde3ea}
+    .cta{margin-top:auto;padding:14px;border-top:1px solid #eee;background:#fafbff;display:flex;gap:10px}
+    .btn{flex:1;text-align:center;text-decoration:none;border-radius:10px;padding:10px 12px;border:1px solid #d0d7e2;background:#0a2540;color:#fff;font-weight:600}
+    .btn.secondary{background:#fff;color:#0a2540}
+    footer{padding:20px;text-align:center;color:#666}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Interactive Pool Materials Showroom</h1>
+    <p>Explore our curated selection of premium pool materials from leading manufacturers. Click “View on NPT” to see full specifications and purchase options.</p>
+  </header>
+
+  <div class="wrap">
+    <div class="filters">
+      <input id="q" placeholder="Search tiles, finishes, colors…" />
+      <select id="cat">
+        <option value="">All Categories</option>
+        <option>Tile</option>
+        <option>Finish</option>
+        <option>Hardscape</option>
+      </select>
+    </div>
+
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <footer>Some products link to NPT for full specs. NPT is a trademark of its owner. Links provided for reference.</footer>
+
+  <script>
+    // Minimal sample dataset — replace with your curated list
+    const DATA = [
+      {
+        id:"el-black-deco-6x6",
+        title:"Elements – Black Deco 6\"×6\"",
+        category:"Tile",
+        tags:["Stone look","Glass center","6x6"],
+        // Use your own hosted thumbnail or get permission from NPT
+        thumb:"/images/elements-black-deco.jpg",
+        nptUrl:"https://www.nptpool.com/tile/elements/",
+      },
+      {
+        id:"veracruz-collection",
+        title:"Veracruz Series (overview)",
+        category:"Tile",
+        tags:["Ceramic","Textured"],
+        thumb:"/images/veracruz-overview.jpg",
+        nptUrl:"https://www.nptpool.com/tile/veracruz/",
+      },
+      {
+        id:"finish-catalog",
+        title:"NPT Pool Finish Catalog",
+        category:"Finish",
+        tags:["Pebble","Quartz","Polished"],
+        thumb:"/images/finish-catalog-2024.jpg",
+        nptUrl:"https://www.nptpool.com/catalogs/",
+      },
+      {
+        id:"hardscapes",
+        title:"Hardscapes – Pavers & Coping",
+        category:"Hardscape",
+        tags:["Pavers","Coping"],
+        thumb:"/images/hardscapes.jpg",
+        nptUrl:"https://www.nptpool.com/",
+      }
+    ];
+
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const cat = document.getElementById('cat');
+
+    function render(list){
+      grid.innerHTML = "";
+      list.forEach(item=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img class="thumb" src="${item.thumb}" alt="${item.title}">
+          <div class="content">
+            <h3 class="title">${item.title}</h3>
+            <div class="meta">${item.category}</div>
+            <div class="tags">${item.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+          </div>
+          <div class="cta">
+            <a class="btn secondary" href="${item.nptUrl}" rel="nofollow noopener" target="_blank">View on NPT</a>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function applyFilters(){
+      const term = q.value.toLowerCase().trim();
+      const c = cat.value;
+      const filtered = DATA.filter(d=>{
+        const inCat = !c || d.category===c;
+        const inText = !term || (d.title+d.tags.join(' ')).toLowerCase().includes(term);
+        return inCat && inText;
+      });
+      render(filtered);
+    }
+
+    q.addEventListener('input', applyFilters);
+    cat.addEventListener('change', applyFilters);
+    render(DATA);
+  </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+Subject
+
+Update packages page with clear scope, exclusions, and legal disclaimers
+
+Message (copy/paste)
+
+Hi! Please update PoolConsultant.com to clarify what our packages include/exclude and add legal protection. Use the content below and follow the acceptance criteria.
+
+Pages to edit
+
+/ (Home) – the package teaser section
+
+/packages (or whatever our packages URL is)
+
+Global footer – add legal fine-print
+
+New/Updated Sections
+
+Packages intro (top of /packages)
+
+Add a brief intro stating: “Packages provide standard documents needed in most jurisdictions. Some cities/counties require additional items billed separately.”
+
+Owner-Builder Pool Packages – What’s Included / Important Notes / Terms
+Replace or insert the following blocks (keep existing styling):
+
+Heading: “Owner-Builder Pool Packages”
+
+What’s Included
+
+Full pool design drawings
+
+Standard structural, plumbing, and electrical layouts
+
+Basic energy compliance forms
+
+Up to 2 revisions to ensure accuracy
+
+Permit-ready digital plan set (PDF)
+
+Important Notes & Disclaimers
+
+Jurisdictional Requirements Vary: Cities and counties may request additional engineering or documentation beyond the standard package. These items are not included in the base package and may require additional fees.
+
+Exclusions: Packages do not include geotechnical (soil) reports; specialty structural engineering (retaining walls, stem walls, fire feature loads); advanced MEP schematics; or third-party reports unless explicitly listed.
+
+Engineering Services: Pool Design Consultant is a design & planning consultancy. All structural/MEP engineering is performed by licensed third-party engineers. We coordinate these services, but responsibility for engineering lies with the licensed professional.
+
+Permitting Disclaimer: Our packages provide the documentation commonly required for most residential pool permits. We do not guarantee permit approval in all jurisdictions without additional services.
+
+Terms & Conditions (applies to all packages)
+By purchasing, the client acknowledges that:
+
+Additional fees may apply if the local jurisdiction requires extra engineering, studies, or plan modifications not included in the standard package.
+
+Final permit approval is at the discretion of the city/county building department.
+
+Pool Design Consultant does not act as the Engineer of Record; we facilitate and coordinate third-party licensed engineering.
+
+Comparison Table
+Add a comparison table below the notes:
+
+Feature / Service	Base Package	Add-On / Upgrade
+Standard pool design & layout	✔	–
+Plumbing & electrical layout	✔	–
+Energy compliance worksheet	✔	–
+Unlimited revisions	–	✔
+Specialty structural (retaining wall, stem wall, fire features)	–	✔
+Soil/geotechnical reports	–	✔
+Surge tank / advanced hydraulics	–	✔
+Fire feature load engineering	–	✔
+Additional county-specific forms	–	✔
+
+CTA + Messaging
+Below the table add two buttons:
+
+Get a Quote for Extras → /contact or quote form
+
+See What’s Included → anchor link to “What’s Included”
+
+Global Footer – legal fine print (small text)
+Add this once site-wide:
+“© Pool Design Consultant. Packages constitute standard residential pool plan documentation. Additional jurisdictional requirements, specialty engineering, and third-party reports are billed separately. Pool Design Consultant is not an engineering firm. Engineering services are provided by licensed third-party professionals.”
+
+If the site is static HTML
+
+Create/insert semantic blocks with IDs:
+
+#packages-intro
+
+#whats-included
+
+#disclaimers
+
+#terms
+
+#comparison
+
+Add footer fine-print before </footer>
+
+If the site is CMS/templated
+
+Make copy editable via CMS fields.
+
+Add a reusable “Legal Fine Print” footer partial.
+
+Add a site-wide setting for the disclaimer so it’s consistent.
+
+SEO & UX notes
+
+Add FAQ schema for these 3 Q&As on /packages:
+
+“Are specialty engineering services included?” → “No; available as add-ons via licensed third-party engineers.”
+
+“Do you guarantee permit approval?” → “We provide typical documentation; some jurisdictions require extras.”
+
+“What if my county asks for more?” → “We’ll quote add-on services as needed.”
+
+Keep reading level ~8th–10th grade; make lists scannable.
+
+Acceptance criteria (what I’ll check)
+
+ The new copy appears on /packages with headings and lists as above.
+
+ The table clearly shows Base vs Add-On.
+
+ Footer fine-print shows on every page.
+
+ Internal links/buttons work.
+
+ Mobile layout is readable (no overflow; table responsive).
+
+ FAQ schema validates in Rich Results Test.
+
+Optional (nice-to-have)
+
+Badge near the price: “Jurisdictional extras not included”
+
+A collapsible “Examples of extras” list: geotech report, retaining wall calc, fire feature loads, surge tank, county-specific forms, additional MEP.
+
+Thanks!

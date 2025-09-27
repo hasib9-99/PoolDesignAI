@@ -1,0 +1,631 @@
+import React, { useEffect, useMemo, useState } from "react";
+
+/**
+ * Interactive Pool Showroom — single-file React (paste into App.jsx)
+ * -----------------------------------------------------------------
+ * What you get:
+ * - Category tabs: Waterline Tile, Interior Finish, Coping, Decking, Lighting
+ * - Filters: Color family, Finish, Size, Salt-safe, Freeze/Thaw, SRI (decking)
+ * - Product grid with select/compare
+ * - Selection Tray with live cost estimate (uses dims you enter)
+ * - Simple preview panel (hero + swatches)
+ * - Import Catalog (JSON) + Export Selection (JSON)
+ * - (Optional) Pinterest "Save" button stub
+ *
+ * Tailwind optional — it will still render without it.
+ */
+
+// ------------------------------
+// Helpers
+// ------------------------------
+const fmtMoney = (n) => `$${Math.round(n).toLocaleString()}`;
+const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+const CATEGORY_LABEL = {
+  waterline_tile: "Waterline Tile",
+  interior: "Interior Finish",
+  coping: "Coping",
+  decking: "Decking",
+  lighting: "Lighting",
+};
+
+const COLOR_FAMILIES = [
+  { key: "white", hex: "#f3f3f3" },
+  { key: "sand", hex: "#e2d1b0" },
+  { key: "gray", hex: "#9aa0a6" },
+  { key: "beige", hex: "#d9c5ad" },
+  { key: "blue", hex: "#5aa7d6" },
+  { key: "aqua", hex: "#6ed3cf" },
+  { key: "teal", hex: "#147b74" },
+  { key: "green", hex: "#7bb661" },
+  { key: "brown", hex: "#8b6b4c" },
+  { key: "black", hex: "#222" },
+];
+
+// ------------------------------
+// Mock Catalog (expand/replace via Import)
+// Unit costs are rough demo numbers.
+// ------------------------------
+const DEFAULT_CATALOG = [
+  // Waterline tile
+  {
+    id: "tile_glass_azul_1x1",
+    category: "waterline_tile",
+    brand: "Oceanside",
+    name: "Glass Azul 1×1",
+    colors: ["blue", "aqua"],
+    finish: "gloss",
+    size: "1×1",
+    saltSafe: true,
+    freezeThaw: true,
+    absorption: 0.05,
+    imgs: ["https://images.unsplash.com/photo-1503951458645-643d53bfd90f?q=80&w=900"],
+    unit: { materialSqft: 28, laborComplexity: 0.7 },
+    tags: ["coastal", "resort", "sparkle"],
+  },
+  {
+    id: "tile_porcelain_mist_2x2",
+    category: "waterline_tile",
+    brand: "AquaCasa",
+    name: "Porcelain Mist 2×2",
+    colors: ["blue", "gray"],
+    finish: "matte",
+    size: "2×2",
+    saltSafe: true,
+    freezeThaw: true,
+    absorption: 0.2,
+    imgs: ["https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=900"],
+    unit: { materialSqft: 9.5, laborComplexity: 0.4 },
+    tags: ["coastal", "modern"],
+  },
+  {
+    id: "tile_porcelain_sand_3x12",
+    category: "waterline_tile",
+    brand: "CottoCasa",
+    name: "Porcelain Sand 3×12",
+    colors: ["sand", "beige"],
+    finish: "matte",
+    size: "3×12",
+    saltSafe: true,
+    freezeThaw: true,
+    absorption: 0.3,
+    imgs: ["https://images.unsplash.com/photo-1496317899792-9d7dbcd928a1?q=80&w=900"],
+    unit: { materialSqft: 7, laborComplexity: 0.35 },
+    tags: ["minimal", "warm"],
+  },
+
+  // Interior
+  {
+    id: "int_quartz_light_aqua",
+    category: "interior",
+    brand: "WetEdge",
+    name: "Quartz Light Aqua",
+    colors: ["aqua", "blue"],
+    finish: "matte",
+    size: "spray",
+    saltSafe: true,
+    freezeThaw: true,
+    porosity: 0.3,
+    heatGain: 0.6,
+    imgs: ["https://images.unsplash.com/photo-1483721310020-03333e577078?q=80&w=900"],
+    unit: { materialSqft: 6, laborComplexity: 0.6 },
+    tags: ["coastal", "bright"],
+  },
+  {
+    id: "int_pebble_dark_teal",
+    category: "interior",
+    brand: "PebbleTec",
+    name: "Pebble Dark Teal",
+    colors: ["teal", "blue"],
+    finish: "textured",
+    size: "trowel",
+    saltSafe: true,
+    freezeThaw: true,
+    porosity: 0.4,
+    heatGain: 0.85,
+    imgs: ["https://images.unsplash.com/photo-1482192505345-5655af888cc4?q=80&w=900"],
+    unit: { materialSqft: 10, laborComplexity: 0.7 },
+    tags: ["luxury", "resort"],
+  },
+
+  // Coping
+  {
+    id: "cop_porcelain_bullnose_sand",
+    category: "coping",
+    brand: "Porcelanite",
+    name: "Porcelain Bullnose Sand",
+    colors: ["sand", "beige"],
+    finish: "matte",
+    size: "12×24 bullnose",
+    saltSafe: true,
+    freezeThaw: true,
+    absorption: 0.2,
+    imgs: ["https://images.unsplash.com/photo-1565188643195-635443ba6df6?q=80&w=900"],
+    unit: { materialLnft: 18, laborComplexity: 0.5 },
+    tags: ["coastal", "minimal"],
+  },
+  {
+    id: "cop_travertine_tumbled",
+    category: "coping",
+    brand: "RomaStone",
+    name: "Travertine Tumbled",
+    colors: ["beige", "sand", "brown"],
+    finish: "tumbled",
+    size: "varies",
+    saltSafe: false,
+    freezeThaw: false,
+    absorption: 0.8,
+    imgs: ["https://images.unsplash.com/photo-1504309092620-4d0ec726efa4?q=80&w=900"],
+    unit: { materialLnft: 15, laborComplexity: 0.55 },
+    tags: ["rustic", "mediterranean"],
+  },
+
+  // Decking
+  {
+    id: "deck_porcelain_24x24_sand",
+    category: "decking",
+    brand: "AtlasTile",
+    name: "Porcelain 24×24 Sand (SRI 68)",
+    colors: ["sand", "beige"],
+    finish: "matte",
+    size: "24×24",
+    saltSafe: true,
+    freezeThaw: true,
+    sri: 68,
+    absorption: 0.2,
+    imgs: ["https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=900"],
+    unit: { materialSqft: 6.8, laborComplexity: 0.55 },
+    tags: ["coastal", "modern"],
+  },
+  {
+    id: "deck_textured_concrete",
+    category: "decking",
+    brand: "ProCrete",
+    name: "Textured Concrete (Cool Deck)",
+    colors: ["beige", "sand", "gray"],
+    finish: "textured",
+    size: "cast",
+    saltSafe: true,
+    freezeThaw: true,
+    sri: 60,
+    absorption: 0.4,
+    imgs: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=900"],
+    unit: { materialSqft: 4.2, laborComplexity: 0.45 },
+    tags: ["budget", "family"],
+  },
+
+  // Lighting
+  {
+    id: "light_warm_3000k",
+    category: "lighting",
+    brand: "LumaPool",
+    name: "Warm White 3000K + Path",
+    colors: ["warm"],
+    finish: "na",
+    size: "kit",
+    saltSafe: true,
+    freezeThaw: true,
+    imgs: ["https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=900"],
+    unit: { system: 1200 },
+    tags: ["cozy", "evening"],
+  },
+  {
+    id: "light_rgb_scenes",
+    category: "lighting",
+    brand: "LumaPool",
+    name: "RGB Scenes",
+    colors: ["blue", "teal"],
+    finish: "na",
+    size: "kit",
+    saltSafe: true,
+    freezeThaw: true,
+    imgs: ["https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=900"],
+    unit: { system: 1800 },
+    tags: ["fun", "resort"],
+  },
+];
+
+// ------------------------------
+// Cost model (very simple demo)
+// ------------------------------
+function estimateCost(selection, dims) {
+  const { L, W, D, deckSqft, tileBandHeightIn } = dims;
+  const perimeter = 2 * (L + W);
+  const interiorSqft = L * W + 2 * (L * D) + 2 * (W * D); // bottom + sides (approx.)
+  const waterlineLnft = perimeter; // assume perimeter band
+  const waterlineSqft = (waterlineLnft * (tileBandHeightIn / 12));
+
+  let total = 0;
+  let breakdown = [];
+
+  const add = (label, units, unitPrice, extra = 1) => {
+    const sub = units * unitPrice * extra;
+    breakdown.push({ label, sub });
+    total += sub;
+  };
+
+  if (selection.waterline_tile) {
+    const u = selection.waterline_tile.unit;
+    add("Waterline Tile (mat)", waterlineSqft, (u.materialSqft || 0));
+    add("Waterline Tile (labor)", waterlineSqft, (u.materialSqft || 0) * (selection.waterline_tile.unit.laborComplexity || 0.4));
+  }
+  if (selection.interior) {
+    const u = selection.interior.unit;
+    add("Interior Finish (mat)", interiorSqft, (u.materialSqft || 0));
+    add("Interior Finish (labor)", interiorSqft, (u.materialSqft || 0) * (selection.interior.unit.laborComplexity || 0.6));
+  }
+  if (selection.coping) {
+    const u = selection.coping.unit;
+    add("Coping (mat)", perimeter, (u.materialLnft || 0));
+    add("Coping (labor)", perimeter, (u.materialLnft || 0) * (selection.coping.unit.laborComplexity || 0.5));
+  }
+  if (selection.decking) {
+    const u = selection.decking.unit;
+    add("Decking (mat)", deckSqft, (u.materialSqft || 0));
+    add("Decking (labor)", deckSqft, (u.materialSqft || 0) * (selection.decking.unit.laborComplexity || 0.55));
+  }
+  if (selection.lighting) {
+    add("Lighting system", 1, selection.lighting.unit.system || 0);
+  }
+
+  const low = total * 0.9;
+  const high = total * 1.2;
+  return { low, high, breakdown };
+}
+
+// ------------------------------
+// Main App
+// ------------------------------
+export default function App() {
+  const [catalog, setCatalog] = useState(DEFAULT_CATALOG);
+  const [category, setCategory] = useState("waterline_tile");
+  const [saltEnv, setSaltEnv] = useState(true);
+  const [filters, setFilters] = useState({ colors: [], finish: [], size: [], sriMin: 0, freeze: false });
+  const [compare, setCompare] = useState([]);
+  const [selection, setSelection] = useState({});
+  const [dims, setDims] = useState({ L: 32, W: 16, D: 5, deckSqft: 600, tileBandHeightIn: 6 });
+
+  // Persist selection
+  useEffect(() => {
+    const saved = localStorage.getItem("pool_showroom_selection");
+    if (saved) setSelection(JSON.parse(saved));
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("pool_showroom_selection", JSON.stringify(selection));
+  }, [selection]);
+
+  const filtered = useMemo(() => {
+    return catalog.filter((p) => {
+      if (p.category !== category) return false;
+      if (saltEnv && p.saltSafe === false) return false;
+      if (filters.freeze && p.freezeThaw === false) return false;
+      if (filters.colors.length && !p.colors?.some((c) => filters.colors.includes(c))) return false;
+      if (filters.finish.length && !filters.finish.includes(p.finish)) return false;
+      if (filters.size.length && !filters.size.includes(p.size)) return false;
+      if (category === "decking" && (p.sri || 0) < (filters.sriMin || 0)) return false;
+      return true;
+    });
+  }, [catalog, category, saltEnv, filters]);
+
+  const cost = useMemo(() => estimateCost(selection, dims), [selection, dims]);
+
+  const sizesInCat = useMemo(() => Array.from(new Set(catalog.filter(p => p.category===category).map(p=>p.size).filter(Boolean))), [catalog, category]);
+  const finishesInCat = useMemo(() => Array.from(new Set(catalog.filter(p => p.category===category).map(p=>p.finish).filter(Boolean))), [catalog, category]);
+
+  function toggleCompare(p) {
+    setCompare((prev) => (prev.find((x) => x.id === p.id) ? prev.filter((x) => x.id !== p.id) : [...prev, p]));
+  }
+
+  function choose(p) {
+    setSelection((prev) => ({ ...prev, [p.category]: p }));
+  }
+
+  function resetFilters() {
+    setFilters({ colors: [], finish: [], size: [], sriMin: 0, freeze: false });
+  }
+
+  function importJson(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (Array.isArray(data)) setCatalog(data);
+        else alert("JSON must be an array of products");
+      } catch (err) {
+        alert("Invalid JSON: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function exportSelection() {
+    const blob = new Blob([JSON.stringify({ selection, dims, cost }, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "pool-selection.json"; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="max-w-7xl mx-auto p-6">
+        <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Interactive Pool Showroom</h1>
+            <p className="text-slate-600">Pick your waterline tile, interior, coping, decking, and lighting — like a showroom.</p>
+          </div>
+          <div className="flex gap-3 items-center">
+            <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={saltEnv} onChange={e=>setSaltEnv(e.target.checked)} /> Saltwater environment</label>
+            <label className="text-sm cursor-pointer bg-white border rounded-lg px-3 py-2">
+              Import Catalog JSON
+              <input type="file" accept="application/json" onChange={importJson} className="hidden" />
+            </label>
+            <button onClick={exportSelection} className="text-sm bg-slate-900 text-white rounded-lg px-3 py-2">Export Selection</button>
+          </div>
+        </header>
+
+        {/* Category Tabs */}
+        <div className="flex flex-wrap gap-2 mb-3">
+          {Object.keys(CATEGORY_LABEL).map((key) => (
+            <button key={key} onClick={() => setCategory(key)} className={`px-3 py-2 rounded-full border ${category===key? 'bg-slate-900 text-white':'bg-white'}`}>{CATEGORY_LABEL[key]}</button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Filters */}
+          <aside className="lg:col-span-3 bg-white rounded-2xl border p-4 h-fit">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <button onClick={resetFilters} className="text-xs underline">Reset</button>
+            </div>
+            <div className="mb-4">
+              <div className="text-sm text-slate-600 mb-1">Color family</div>
+              <div className="flex flex-wrap gap-2">
+                {COLOR_FAMILIES.map(cf => (
+                  <button key={cf.key}
+                    onClick={()=>setFilters(f=> ({...f, colors: f.colors.includes(cf.key)? f.colors.filter(x=>x!==cf.key): [...f.colors, cf.key]}))}
+                    className={`h-8 px-2 rounded-full border flex items-center gap-2 ${filters.colors.includes(cf.key)? 'ring-2 ring-slate-900':''}`}
+                    title={cf.key}
+                  >
+                    <span className="h-4 w-4 rounded-full border" style={{background: cf.hex}} />
+                    <span className="text-xs capitalize">{cf.key}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            {!!finishesInCat.length && (
+              <div className="mb-4">
+                <div className="text-sm text-slate-600 mb-1">Finish</div>
+                <div className="flex flex-wrap gap-2">
+                  {finishesInCat.map(fi => (
+                    <button key={fi} onClick={()=>setFilters(f=> ({...f, finish: f.finish.includes(fi)? f.finish.filter(x=>x!==fi): [...f.finish, fi]}))} className={`px-3 py-1 rounded-full border text-xs capitalize ${filters.finish.includes(fi)? 'bg-slate-900 text-white':''}`}>{fi}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {!!sizesInCat.length && (
+              <div className="mb-4">
+                <div className="text-sm text-slate-600 mb-1">Size</div>
+                <div className="flex flex-wrap gap-2">
+                  {sizesInCat.map(sz => (
+                    <button key={sz} onClick={()=>setFilters(f=> ({...f, size: f.size.includes(sz)? f.size.filter(x=>x!==sz): [...f.size, sz]}))} className={`px-3 py-1 rounded-full border text-xs ${filters.size.includes(sz)? 'bg-slate-900 text-white':''}`}>{sz}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="mb-4">
+              <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={filters.freeze} onChange={e=>setFilters(f=>({...f, freeze: e.target.checked}))}/> Freeze/Thaw rated</label>
+            </div>
+            {category === 'decking' && (
+              <div className="mb-2">
+                <div className="text-sm text-slate-600 mb-1">Min SRI (cooler deck)</div>
+                <input type="range" min={0} max={100} value={filters.sriMin} onChange={e=>setFilters(f=>({...f, sriMin: Number(e.target.value)}))} />
+                <div className="text-xs text-slate-500">{filters.sriMin}</div>
+              </div>
+            )}
+          </aside>
+
+          {/* Product Grid */}
+          <main className="lg:col-span-6 min-h-[400px]">
+            {filtered.length === 0 ? (
+              <div className="h-full flex items-center justify-center text-slate-500 border rounded-2xl bg-white">No products match these filters.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {filtered.map((p) => (
+                  <ProductCard key={p.id} p={p} onSelect={choose} onCompare={toggleCompare} selected={selection[p.category]?.id === p.id} />
+                ))}
+              </div>
+            )}
+          </main>
+
+          {/* Preview & Dims */}
+          <section className="lg:col-span-3 bg-white rounded-2xl border p-4 flex flex-col gap-3">
+            <h2 className="text-lg font-semibold">Preview</h2>
+            <PreviewPanel selection={selection} />
+            <h3 className="text-sm font-medium mt-2">Dimensions (for cost)</h3>
+            <div className="grid grid-cols-3 gap-2 text-sm">
+              <NumberField label="Length (ft)" value={dims.L} onChange={(v)=>setDims(d=>({...d, L: v}))} />
+              <NumberField label="Width (ft)" value={dims.W} onChange={(v)=>setDims(d=>({...d, W: v}))} />
+              <NumberField label="Avg Depth (ft)" value={dims.D} onChange={(v)=>setDims(d=>({...d, D: v}))} />
+              <NumberField label="Deck (sqft)" value={dims.deckSqft} onChange={(v)=>setDims(d=>({...d, deckSqft: v}))} />
+              <NumberField label="Tile Band (in)" value={dims.tileBandHeightIn} onChange={(v)=>setDims(d=>({...d, tileBandHeightIn: v}))} />
+            </div>
+            <div className="text-xs text-slate-500">Estimates are placeholders; verify with a pro takeoff.</div>
+          </section>
+        </div>
+
+        {/* Selection Tray */}
+        <SelectionTray selection={selection} onRemove={(cat)=> setSelection(s=> { const n={...s}; delete n[cat]; return n; })} cost={cost} />
+
+        {/* Compare Drawer */}
+        {compare.length > 0 && (
+          <CompareDrawer items={compare} onClose={()=>setCompare([])} />
+        )}
+
+        <footer className="text-xs text-slate-500 mt-6">Demo showroom — replace the catalog with your real products (use Import Catalog JSON).</footer>
+      </div>
+    </div>
+  );
+}
+
+// ------------------------------
+// Components
+// ------------------------------
+function ProductCard({ p, onSelect, onCompare, selected }) {
+  return (
+    <div className={`bg-white rounded-2xl border overflow-hidden hover:shadow transition ${selected? 'ring-2 ring-slate-900':''}`}>
+      <div className="aspect-video w-full bg-slate-100 overflow-hidden">
+        <img src={p.imgs?.[0]} alt={p.name} className="w-full h-full object-cover" />
+      </div>
+      <div className="p-3">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <div className="font-semibold text-sm">{p.name}</div>
+            <div className="text-xs text-slate-500">{p.brand}</div>
+          </div>
+          <div className="flex gap-1 flex-wrap justify-end">
+            {p.saltSafe===false && <Badge>Not Salt-Safe</Badge>}
+            {p.saltSafe===true && <Badge>Salt-Safe</Badge>}
+            {p.freezeThaw && <Badge>Freeze/Thaw</Badge>}
+            {typeof p.sri === 'number' && <Badge>SRI {p.sri}</Badge>}
+          </div>
+        </div>
+        {p.colors?.length>0 && (
+          <div className="flex gap-1 mt-2">
+            {p.colors.slice(0,6).map((c)=> <span key={c} className="h-3 w-3 rounded-full border" title={c} style={{background: swatch(c)}} />)}
+          </div>
+        )}
+        <div className="mt-3 flex items-center gap-2">
+          <button onClick={()=>onSelect(p)} className={`px-3 py-1 rounded-full text-sm ${selected? 'bg-slate-900 text-white':'bg-slate-200'}`}>{selected? 'Selected':'Select'}</button>
+          <button onClick={()=>onCompare(p)} className="px-3 py-1 rounded-full text-sm bg-white border">Compare</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Badge({ children }) {
+  return <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 border">{children}</span>;
+}
+
+function NumberField({ label, value, onChange }) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="text-xs text-slate-600">{label}</span>
+      <input type="number" className="border rounded-lg px-2 py-1" value={value} onChange={(e)=>onChange(Number(e.target.value))} />
+    </label>
+  );
+}
+
+function PreviewPanel({ selection }) {
+  const hero = selection.interior?.imgs?.[0] || selection.waterline_tile?.imgs?.[0] || selection.decking?.imgs?.[0] || "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1200";
+  const chips = [selection.waterline_tile, selection.interior, selection.coping, selection.decking].filter(Boolean).map(x=> x.imgs?.[0]);
+  return (
+    <div className="rounded-xl border overflow-hidden">
+      <div className="aspect-video bg-slate-100">
+        <img src={hero} alt="preview" className="w-full h-full object-cover" />
+      </div>
+      <div className="grid grid-cols-4 gap-1 p-2 bg-white">
+        {chips.map((src,i)=> <img key={i} src={src} alt={`s-${i}`} className="h-16 w-full object-cover rounded-lg border" />)}
+      </div>
+    </div>
+  );
+}
+
+function SelectionTray({ selection, onRemove, cost }) {
+  const items = Object.keys(CATEGORY_LABEL).map((cat)=> ({ cat, label: CATEGORY_LABEL[cat], item: selection[cat]||null }));
+  return (
+    <div className="mt-5 bg-white rounded-2xl border p-4">
+      <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+        <h2 className="text-lg font-semibold">Your Selections</h2>
+        <div className="text-sm"><span className="text-slate-600 mr-2">Estimated Installed:</span> <span className="font-semibold">{fmtMoney(cost.low)}–{fmtMoney(cost.high)}</span></div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+        {items.map(({cat,label,item})=> (
+          <div key={cat} className="border rounded-xl p-2">
+            <div className="text-xs text-slate-500 mb-1">{label}</div>
+            {item? (
+              <div className="flex items-center gap-2">
+                <img src={item.imgs?.[0]} alt={item.name} className="h-12 w-12 object-cover rounded" />
+                <div className="min-w-0">
+                  <div className="text-sm font-medium truncate" title={item.name}>{item.name}</div>
+                  <div className="text-xs text-slate-500 truncate">{item.brand}</div>
+                </div>
+                <button onClick={()=>onRemove(cat)} className="ml-auto text-xs underline">Remove</button>
+              </div>
+            ): (
+              <div className="text-xs text-slate-400">None selected</div>
+            )}
+          </div>
+        ))}
+      </div>
+      {cost.breakdown?.length>0 && (
+        <details className="mt-3">
+          <summary className="cursor-pointer text-sm">View cost breakdown</summary>
+          <ul className="mt-2 text-sm">
+            {cost.breakdown.map((b,i)=>(<li key={i} className="flex justify-between"><span>{b.label}</span><span>{fmtMoney(b.sub)}</span></li>))}
+          </ul>
+        </details>
+      )}
+    </div>
+  );
+}
+
+function CompareDrawer({ items, onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black/40 flex">
+      <div className="ml-auto w-full md:w-[720px] bg-white h-full p-4 overflow-auto">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold">Compare</h3>
+          <button onClick={onClose} className="px-3 py-1 rounded-full border">Close</button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {items.map((p)=>(
+            <div key={p.id} className="border rounded-xl overflow-hidden">
+              <img src={p.imgs?.[0]} alt={p.name} className="h-40 w-full object-cover" />
+              <div className="p-3">
+                <div className="font-semibold">{p.name}</div>
+                <div className="text-xs text-slate-500 mb-2">{p.brand} • {CATEGORY_LABEL[p.category]}</div>
+                <Specs p={p} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Specs({ p }) {
+  const rows = [
+    ["Finish", p.finish],
+    ["Size", p.size],
+    ["Colors", p.colors?.join(", ")],
+    ["Salt-Safe", p.saltSafe===false? "No":"Yes"],
+    ["Freeze/Thaw", p.freezeThaw? "Yes":"No"],
+    ["Absorption", typeof p.absorption==='number'? p.absorption : null],
+    ["SRI", p.sri],
+  ].filter(([,v])=> v!==undefined && v!==null);
+  return (
+    <table className="text-xs w-full">
+      <tbody>
+        {rows.map(([k,v])=> (
+          <tr key={k} className="border-t">
+            <td className="py-1 text-slate-500 w-28">{k}</td>
+            <td className="py-1">{String(v)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function swatch(name) {
+  const map = {
+    white: "#f3f3f3", sand: "#e2d1b0", beige: "#d9c5ad", gray: "#9aa0a6", blue: "#5aa7d6", aqua: "#6ed3cf", teal: "#147b74", green: "#7bb661", brown: "#8b6b4c", black: "#222",
+    warm: "#f2d28b"
+  };
+  return map[name] || "#ddd";
+}

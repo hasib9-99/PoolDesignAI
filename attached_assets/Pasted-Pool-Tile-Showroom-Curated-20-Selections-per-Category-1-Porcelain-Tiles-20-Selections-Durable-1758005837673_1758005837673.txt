@@ -1,0 +1,156 @@
+Pool Tile Showroom — Curated 20 Selections per Category
+1. Porcelain Tiles (20 Selections)
+
+(Durable, versatile, most common for waterline tile)
+
+Disko Bay — Ocean Blue, Iceberg White, Cyan Bay
+
+Atlantis — Blue, Teal
+
+Purity — Deco, Light Blue, White
+
+Cortina — Curacao Blue, Champagne Beige
+
+Newstone — White Gray, Pietra Azul, Beige
+
+Menorca — Atlantic Blue
+
+Blue Seas — Teal, Rustic Blue, Royal Blue, Light Blue Deco
+
+Key West — Cool Waves, Marina
+
+Caldera — Blue Agate, Moonstone, Blue Azurite
+
+Barbados — Aqua, Cobalto
+
+2. Porcelain Veneers (20 Selections)
+
+(Large format, spa walls, feature walls)
+
+Marble Canyon — White, Gray
+
+Riostone — White, Graystone
+
+Travertino — Beige, Bianco
+
+Carrara — Bianco, Grigio
+
+Rockwood — White
+
+Tulipwood — Blue, Gray
+
+Ledgerstone — Silver, Blue Slate, Marble Split Face
+
+Classic Quartzite — Silver, Gray
+
+Tibur 3D Honed — Beige, Gray
+
+Travertine Split Face — Beige, Gray
+
+3. Glass Tile (20 Selections)
+
+(Reflective, shimmery, most popular for high-end waterlines)
+
+Melody — Aquamarine, Alice Blue White, Cobalt (1”x1” & 1”x3”)
+
+Borghini — Blue, Turquoise, White
+
+Glacier Bay — Ice White, Ocean Blue, Sky Blue
+
+Elysium — Peacock (1x2 & 2x4), Turquoise, Blue
+
+Essence — Sapphire Blue, Aqua
+
+Allure — Sky Blend, Ice Blend
+
+Fusion — Blue Blend, White Blend
+
+Boutique Glass — Turquoise Blend, Ocean Blend
+
+Twill — Caribbean, White, Blue
+
+Cosmopolitan — Blue, Gray
+
+4. High-End Glass Tile (20 Selections)
+
+(Luxury, artistic mosaics, metallics & iridescents)
+
+Aquarius — Mica 1x2
+
+Kaikoura — Snowdrift White, Ocean Blue, Sand
+
+Meridian — Sea Green, Cobalt, Electric Blue
+
+Lightwaves — Azure, Sky, Pearl
+
+Harmony — Pacific Blue, Lake Blue, Olive Blue
+
+Bijou — Blue Pearl, White Crystal
+
+Boutique Glass Premium — Midnight Blue, Ice Silver
+
+Majorca — Ocean Gray, Blue Pearl
+
+Islands Glass — Ocean Breeze Deco
+
+North Ocean — Cobalt, Blue
+
+5. Natural Stone (20 Selections)
+
+(Rustic, earthy, natural textures)
+
+Ledgerstone — Silver, Blue Slate
+
+Travertine Split Face — Beige, Gray
+
+Marble Split Face — White, Blue
+
+Classic Quartzite — White, Gray
+
+VN Marble — White
+
+Alpine — Glacier White, Gray
+
+River Rock — Pebble Mixes
+
+Volcano — Aqua, Light Blue
+
+Safari — Sky Blue, Boulder Gray
+
+Quarry Ridge — Blue Stone, Silver
+
+6. Distinctive / Specialty (20 Selections)
+
+(Unique mosaics, shapes, and custom options)
+
+Cirque Round — Blue, White
+
+Jubilee — Ocean Blue, White Deco
+
+Mod — Geometric Blues
+
+Pearl — White, Blue, Sand
+
+Utopia — Blue, Green
+
+Scents — Aqua Deco
+
+Positano — Aqua, Blue
+
+Zanzibar — Turquoise, Blue
+
+Ellada — Kea, Naxos, Anafi
+
+Talavera — Merida, La Paz
+
+✅ Implementation Tip
+
+For your interactive showroom on Replit:
+
+Use category dropdowns → “Porcelain,” “Glass,” “Natural Stone,” etc.
+
+Each tile has: Name, Image thumbnail, Size options, Color swatches.
+
+Optional: Add “Compare” button so clients can view 2–3 choices side-by-side.
+
+Future AI add-on: “Suggest me a waterline tile for modern lagoon pool” → your AI pulls from these 20 curated picks.

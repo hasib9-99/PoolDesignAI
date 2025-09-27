@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pool Design Consultant FAQs | Owner‑Builder & DIY Pool Permit Help</title>
+  <meta name="description" content="Answers to common questions about pool design, owner‑builder permits, engineering plans, DIY pools, costs, timelines, and safety requirements." />
+  <link rel="canonical" href="https://www.pooldesignconsultant.com/faq/" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Pool Design Consultant FAQs" />
+  <meta property="og:description" content="Owner‑Builder & DIY Pool Permit Help" />
+  <meta property="og:url" content="https://www.pooldesignconsultant.com/faq/" />
+  <meta property="og:site_name" content="Pool Design Consultant" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Brand Styles: coastal light theme (logo colors matched) -->
+  <style>
+    :root {
+      --brand: #0a6e69;        /* deep teal */
+      --brand-2: #0e807a;      /* teal hover */
+      --accent: #f07f0e;       /* logo orange */
+      --sand: #f4d19b;         /* sand accent */
+      --ink: #0f172a;          /* dark text */
+      --muted: #475569;        /* secondary text */
+      --panel: #ffffff;        /* card bg */
+      --bg: #f7fafc;           /* page bg */
+      --ring: rgba(14,128,122,.25);
+      --radius: 16px;
+      --shadow: 0 8px 26px rgba(2, 44, 34, .08);
+      --maxw: 1080px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji"}
+    a{color:var(--brand)} a:hover{color:var(--brand-2)}
+
+    /* Header/Nav */
+    .topbar{background:linear-gradient(180deg,#ffffff, #f3faf8); border-bottom:1px solid #e6f2ef}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+    .logo img{height:44px;width:auto;border-radius:8px}
+    .logo span{font-weight:800;letter-spacing:.2px}
+    .nav-links a{margin-left:14px;font-weight:600}
+
+    /* Hero */
+    header.hero{padding:34px 0}
+    h1{font-size:clamp(28px,5vw,40px);margin:6px 0 6px;letter-spacing:-.02em}
+    .lede{color:var(--muted);margin:0}
+
+    /* Layout */
+    .grid{display:grid;gap:22px;grid-template-columns:1fr}
+    @media(min-width:980px){.grid{grid-template-columns:1fr 320px}}
+    .card{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+    /* FAQ */
+    .faq{padding:10px}
+    .faq section{padding:8px 12px}
+    .faq details{background:#fff;border:1px solid #e7eef0;border-radius:14px;padding:8px 14px;margin:10px 0;transition:border-color .2s}
+    .faq details[open]{border-color:var(--ring)}
+    .faq summary{cursor:pointer;list-style:none;font-weight:800;padding:6px 0}
+    .faq summary::-webkit-details-marker{display:none}
+    .q{display:inline-flex;align-items:center;gap:10px}
+    .dot{inline-size:10px;block-size:10px;border-radius:999px;background:var(--accent);box-shadow:0 0 0 3px rgba(240,127,14,.15)}
+    .a{color:var(--ink);padding:6px 2px 10px}
+
+    /* TOC */
+    .toc{padding:16px;position:sticky;top:18px}
+    .toc h3{margin:0 0 8px;font-size:16px;color:var(--muted)}
+    .toc ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+    .toc a{display:block;padding:10px 12px;border-radius:12px;border:1px solid #e7eef0;background:#fff}
+    .toc a:hover{border-color:var(--ring)}
+
+    /* CTA */
+    .cta{padding:20px}
+    .banner{background:linear-gradient(135deg, rgba(10,110,105,.08), rgba(244,209,155,.18));border:1px solid #e7eef0;border-radius:14px;padding:16px}
+    .cta h2{margin:0 0 6px;font-size:18px}
+    .cta p{margin:0;color:var(--muted)}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{background:var(--brand);color:#fff;font-weight:800;border:none;padding:10px 14px;border-radius:12px;cursor:pointer;box-shadow:0 6px 18px rgba(10,110,105,.25)}
+    .btn:hover{background:var(--brand-2)}
+    .btn.secondary{background:transparent;color:var(--brand);border:2px solid var(--brand)}
+
+    footer{color:var(--muted);padding:30px 0;text-align:center}
+  </style>
+
+  <!-- JSON-LD containers (filled by script) -->
+  <script type="application/ld+json" id="schema-website"></script>
+  <script type="application/ld+json" id="schema-organization"></script>
+  <script type="application/ld+json" id="schema-breadcrumbs"></script>
+  <script type="application/ld+json" id="schema-faq"></script>
+</head>
+<body>
+  <!-- Top nav with logo + socials -->
+  <div class="topbar">
+    <div class="wrap nav">
+      <a class="logo" href="/" aria-label="Pool Design Consultant home">
+        <!-- Upload your logo image to /assets/pdc-logo.jpg on your site -->
+        <img src="/assets/pdc-logo.jpg" alt="Pool Design Consultant logo" />
+        <span>Pool Design Consultant</span>
+      </a>
+      <div class="nav-links">
+        <a href="/owner-builder/">Owner‑Builder</a>
+        <a href="/how-it-works/">How It Works</a>
+        <a href="/contact/">Contact</a>
+        <a aria-label="Facebook" href="https://www.facebook.com/pooldesignconsultant">Facebook</a>
+        <a aria-label="Instagram" href="https://www.instagram.com/pooldesignconsultant">Instagram</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="wrap">
+      <h1>Frequently Asked Questions</h1>
+      <p class="lede">Owner‑Builder & DIY pool permitting answers—engineering, TDH, VGB/barrier, portals (Accela/Fast Track), costs, timelines, and more.</p>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <article class="card faq" id="faq">
+      <!-- Categories as anchored sections -->
+      <section id="owner-builder" aria-labelledby="owner-builder-h2">
+        <h2 id="owner-builder-h2" style="padding:16px 12px 0; margin:0">Owner‑Builder Permitting</h2>
+        <details>
+          <summary><span class="q"><span class="dot"></span>Can I legally act as my own contractor to build a pool?</span></summary>
+          <div class="a">Yes. In Florida, Statute 489.103(7) allows homeowners to act as their own contractor for pools built for personal use, provided you supervise the work and hire licensed subcontractors for regulated trades.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>Do I need to file an Owner‑Builder affidavit?</span></summary>
+          <div class="a">Most counties require an affidavit acknowledging responsibility as the contractor, plus any county‑specific disclosures.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>How long does county plan review take?</span></summary>
+          <div class="a">Typical reviews take 5–15 business days. Rechecks on corrections are commonly 2–5 business days depending on workload.</div>
+        </details>
+      </section>
+
+      <section id="engineering" aria-labelledby="engineering-h2">
+        <h2 id="engineering-h2" style="padding:16px 12px 0; margin:0">Engineering & Plans</h2>
+        <details>
+          <summary><span class="q"><span class="dot"></span>Do I need signed/sealed engineering drawings?</span></summary>
+          <div class="a">Yes—most jurisdictions require sealed structural sheets, sections, and schedules, plus hydraulics/TDH and barrier details.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>What is a TDH worksheet and why is it required?</span></summary>
+          <div class="a">Total Dynamic Head calculations show the hydraulic load so the pump, filter, and heater sizing meet code and efficiency requirements.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>What supporting documents are often missed?</span></summary>
+          <div class="a">Commonly missed: VGB suction outlet compliance, energy efficiency form, barrier/fence details, and a correctly scaled plot plan.</div>
+        </details>
+      </section>
+
+      <section id="costs" aria-labelledby="costs-h2">
+        <h2 id="costs-h2" style="padding:16px 12px 0; margin:0">Costs & Timelines</h2>
+        <details>
+          <summary><span class="q"><span class="dot"></span>How much does a permitting package cost?</span></summary>
+          <div class="a">Our typical permit coordination package is <strong>$895</strong>, which includes engineered drawings, TDH, barrier details, and submittal coordination.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>What other fees should I expect?</span></summary>
+          <div class="a">Counties charge plan review and inspection fees, plus trade fees for electrical, gas, or screen enclosures where applicable.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>How long from submission to permit approval?</span></summary>
+          <div class="a">On average, 2–4 weeks depending on county workload, completeness, and number of correction cycles.</div>
+        </details>
+      </section>
+
+      <section id="diy-vs-builder" aria-labelledby="diy-vs-builder-h2">
+        <h2 id="diy-vs-builder-h2" style="padding:16px 12px 0; margin:0">DIY vs Hiring</h2>
+        <details>
+          <summary><span class="q"><span class="dot"></span>What’s the difference between hiring a pool builder and acting as Owner‑Builder?</span></summary>
+          <div class="a">Hiring a builder means they serve as contractor and assume liability. Owner‑Builder saves money but puts permit compliance and scheduling on you.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>Can you just prepare drawings and I handle the rest?</span></summary>
+          <div class="a">Yes. We can provide engineered drawings only, or add permit coordination if you want us to manage submittals and resubmittals.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>Do you coordinate resubmittals if the county rejects a sheet?</span></summary>
+          <div class="a">Yes—we handle plan reviewer comments, clouded revisions, and resubmittals until approval.</div>
+        </details>
+      </section>
+
+      <section id="technical" aria-labelledby="technical-h2">
+        <h2 id="technical-h2" style="padding:16px 12px 0; margin:0">Technical & Portals</h2>
+        <details>
+          <summary><span class="q"><span class="dot"></span>What if my PDF file is over 10MB?</span></summary>
+          <div class="a">Many counties reject oversized files. We compress PDFs, split large sets, and export correctly so each PDF passes upload checks.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>How do I submit via Accela or Fast Track?</span></summary>
+          <div class="a">We guide you step‑by‑step: account creation, selecting the correct permit type, uploading files, and clicking <em>Submission Complete</em> to start pre‑verification.</div>
+        </details>
+        <details>
+          <summary><span class="q"><span class="dot"></span>Do I need a fence or alarm around my pool?</span></summary>
+          <div class="a">Most jurisdictions require at least one barrier such as a fence, door alarms, or safety covers. Requirements vary by county; we include barrier details in every plan set.</div>
+        </details>
+      </section>
+
+      <section class="cta" aria-labelledby="cta-h2">
+        <div class="banner">
+          <h2 id="cta-h2">Need permitting help now?</h2>
+          <p>We prepare code‑correct drawings, TDH, VGB/barrier details, and coordinate portal submissions.</p>
+          <div class="btns">
+            <a class="btn" href="/contact/">Get Permitting Help</a>
+            <a class="btn secondary" href="https://calendly.com/kayne-pooldesignconsultant/30min">Book a 30‑min Call</a>
+            <a class="btn secondary" href="mailto:kayne@pooldesignconsultant.com">Email Us</a>
+          </div>
+        </div>
+      </section>
+    </article>
+
+    <aside class="card toc" aria-label="On this page">
+      <h3>On this page</h3>
+      <ul>
+        <li><a href="#owner-builder">Owner‑Builder Permitting</a></li>
+        <li><a href="#engineering">Engineering & Plans</a></li>
+        <li><a href="#costs">Costs & Timelines</a></li>
+        <li><a href="#diy-vs-builder">DIY vs Hiring</a></li>
+        <li><a href="#technical">Technical & Portals</a></li>
+      </ul>
+      <div style="margin-top:12px; font-size:14px; color:var(--muted)">Tip: Use the search bar (Ctrl/Cmd + F) to find a keyword like “TDH” or “barrier”.</div>
+    </aside>
+  </main>
+
+  <footer>
+    <div class="wrap">© <span id="y"></span> Pool Design Consultant</div>
+  </footer>
+
+  <!-- Structured Data generation -->
+  <script>
+    // Year stamp
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Website
+    document.getElementById('schema-website').textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Pool Design Consultant",
+      "url": "https://www.pooldesignconsultant.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.pooldesignconsultant.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    });
+
+    // Organization (use your uploaded logo path below)
+    document.getElementById('schema-organization').textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Pool Design Consultant",
+      "url": "https://www.pooldesignconsultant.com/",
+      "logo": "https://www.pooldesignconsultant.com/assets/pdc-logo.jpg",
+      "sameAs": [
+        "https://www.facebook.com/pooldesignconsultant",
+        "https://www.instagram.com/pooldesignconsultant"
+      ]
+    });
+
+    // Breadcrumbs
+    document.getElementById('schema-breadcrumbs').textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.pooldesignconsultant.com/"},
+        {"@type": "ListItem", "position": 2, "name": "FAQ", "item": "https://www.pooldesignconsultant.com/faq/"}
+      ]
+    });
+
+    // Build FAQ JSON-LD from visible content for consistency
+    const qas = [
+      {
+        q: "Can I legally act as my own contractor to build a pool?",
+        a: "Yes. In Florida, Statute 489.103(7) allows homeowners to act as their own contractor for pools built for personal use, provided you supervise the work and hire licensed subcontractors for regulated trades."
+      },
+      { q: "Do I need to file an Owner‑Builder affidavit?", a: "Most counties require an affidavit acknowledging responsibility as the contractor, plus any county‑specific disclosures." },
+      { q: "How long does county plan review take?", a: "Typical reviews take 5–15 business days. Rechecks on corrections are commonly 2–5 business days depending on workload." },
+      { q: "Do I need signed/sealed engineering drawings?", a: "Yes—most jurisdictions require sealed structural sheets, sections, and schedules, plus hydraulics/TDH and barrier details." },
+      { q: "What is a TDH worksheet and why is it required?", a: "Total Dynamic Head calculations show the hydraulic load so the pump, filter, and heater sizing meet code and efficiency requirements." },
+      { q: "What supporting documents are often missed?", a: "Commonly missed: VGB suction outlet compliance, energy efficiency form, barrier/fence details, and a correctly scaled plot plan." },
+      { q: "How much does a permitting package cost?", a: "Our typical permit coordination package is $895, which includes engineered drawings, TDH, barrier details, and submittal coordination." },
+      { q: "What other fees should I expect?", a: "Counties charge plan review and inspection fees, plus trade fees for electrical, gas, or screen enclosures where applicable." },
+      { q: "How long from submission to permit approval?", a: "On average, 2–4 weeks depending on county workload, completeness, and number of correction cycles." },
+      { q: "What’s the difference between hiring a pool builder and acting as Owner‑Builder?", a: "Hiring a builder means they serve as contractor and assume liability. Owner‑Builder saves money but puts permit compliance and scheduling on you." },
+      { q: "Can you just prepare drawings and I handle the rest?", a: "Yes. We can provide engineered drawings only, or add permit coordination if you want us to manage submittals and resubmittals." },
+      { q: "Do you coordinate resubmittals if the county rejects a sheet?", a: "Yes—we handle plan reviewer comments, clouded revisions, and resubmittals until approval." },
+      { q: "What if my PDF file is over 10MB?", a: "Many counties reject oversized files. We compress PDFs, split large sets, and export correctly so each PDF passes upload checks." },
+      { q: "How do I submit via Accela or Fast Track?", a: "We guide you step‑by‑step: account creation, selecting the correct permit type, uploading files, and clicking Submission Complete to start pre‑verification." },
+      { q: "Do I need a fence or alarm around my pool?", a: "Most jurisdictions require at least one barrier such as a fence, door alarms, or safety covers. Requirements vary by county; we include barrier details in every plan set." }
+    ];
+
+    document.getElementById('schema-faq').textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": qas.map(({q,a}) => ({
+        "@type": "Question",
+        "name": q,
+        "acceptedAnswer": { "@type": "Answer", "text": a }
+      }))
+    });
+  </script>
+</body>
+</html>

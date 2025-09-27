@@ -1,0 +1,139 @@
+What to send for your pool design
+
+Property basics
+
+Street address + parcel ID (if known)
+
+City/County (for permitting rules)
+
+HOA? If yes, any guidelines/PDF
+
+Survey / site plan (required)
+
+Upload a recent boundary survey or site plan (PDF/DWG/JPG).
+
+Must show: lot lines, easements, setbacks, house footprint, doors, windows, finish floor elevation (FFE), utilities (septic, well, cleanouts), and any slopes/retaining walls.
+
+Photos (required)
+
+Backyard: wide shots from the house toward the rear and from rear toward the house.
+
+Sides: both side yards (equipment placement + access path).
+
+Panoramas welcome. Name files like: address_view_description.jpg (e.g., 9649SW82nd_back_to_house.jpg).
+
+Sketch & notes (required)
+Tell us the big picture:
+
+Pool: shape, inside dimensions (L×W), max depth, shallow depth, tanning ledge(s)
+
+Deck: material + approximate square footage & layout (straight/curved)
+
+Features (check all that apply, add notes):
+
+Water: scuppers, sheers, laminars, bubblers, deck jets, spillway, infinity/knife edge
+
+Fire: fire bowls, pit (gas/propane), location
+
+Structures: pergola, ramada, pavilion, outdoor kitchen (appliances, gas/water/electric)
+
+Spa: size, spillover yes/no
+
+Equipment prefs (if any): Pentair/Hayward, heater/HP, SWG, automation
+
+Safety: screen enclosure, fence type, alarms
+
+Timeline & budget range
+
+Files we accept
+
+Docs: PDF, DOCX
+
+Images: JPG/PNG/HEIC
+
+CAD: DWG/DXF (optional)
+
+Max per file: 50 MB (larger? zip it first)
+
+How to send
+
+Use the upload form below (preferred) or email plans@pooldesignconsultant.com
+ with your address in the subject.
+
+Turnaround: Concepts in 2–4 business days after complete files. You’ll get a confirmation email with a ticket number.
+
+2) Form requirements for your Replit dev (hand this to them)
+
+Goal: Build an intake that collects structured answers + uploads, stores files safely, and notifies you.
+
+A) Frontend (single page form)
+
+Fields (required unless noted)
+
+Full name, email, phone
+
+Project address, city, state, ZIP
+
+County/Authority Having Jurisdiction (dropdown + “other”)
+
+HOA (yes/no) + HOA PDF (optional upload)
+
+Survey/site plan (required file upload)
+
+Photos (multiple files)
+
+Sketch/notes (textarea + optional file)
+
+Feature checkboxes (water/fire/spa/structures) + dynamic detail text fields
+
+Deck material dropdown + deck sqft number
+
+Pool L×W, shallow depth, deep depth
+
+Desired equipment brand (optional)
+
+Budget range (dropdown), target start date (date)
+
+Consent checkbox: “I confirm I own or have written permission to submit this property info. I understand this is a design service; engineering/permitting may be additional.” (link to TOS)
+
+UX
+
+Multi-step (progress bar), autosave to localStorage, drag-and-drop uploads with file-type & size validation, thumbnail previews, clear error messages.
+
+Final review screen.
+
+B) Storage & delivery
+
+File storage (pick one):
+
+S3/Cloudflare R2/GCS bucket with private ACL; return signed URLs.
+
+(If you must avoid backend at first) Filestack or Uploadcare for hosted uploads.
+
+Submission record:
+
+Persist a JSON record (Supabase/Firestore/SQLite) containing: IDs, contact info, answers, array of file metadata (original name, type, size, bucket key, signed URL), timestamps, source IP.
+
+Notifications:
+
+Send two emails via SendGrid (you already use it):
+
+Admin: full submission with links to files.
+
+Client: confirmation + ticket number, next steps, reply-to your address.
+
+Optional Slack/Discord webhook ping with summary.
+
+C) Security & limits
+
+Client-side validation + server-side re-validation.
+
+Virus scan on upload if possible (e.g., ClamAV step or use Filestack’s built-in).
+
+Rate limit by IP (e.g., 5 submissions/hour).
+
+ReCAPTCHA or hCaptcha on final step.
+
+Reject executables/archives unless .zip.
+
+Enforce 50 MB per file, 1 GB total cap per submission.

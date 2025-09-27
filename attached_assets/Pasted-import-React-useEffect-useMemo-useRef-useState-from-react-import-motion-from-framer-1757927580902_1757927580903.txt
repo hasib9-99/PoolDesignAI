@@ -1,0 +1,502 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
+
+/**
+ * Voice‑to‑Pool Demo
+ * --------------------------------------------------------------
+ * A single‑file React component you can paste into Replit.
+ * TailwindCSS recommended. Works without external UI libs.
+ *
+ * What it does (client‑side demo, no back‑end needed):
+ * 1) Voice/Text input → parses features (style, fire feature, swim‑up bar, sunshelf, etc.)
+ * 2) Shows an instant schematic preview (SVG)
+ * 3) Drafts a simple "construction plan" check‑list
+ * 4) Produces a rough cost estimate and timeline
+ * 5) Provides CTAs (Refine / Save / Request Contractor Match)
+ *
+ * Notes:
+ * - Uses Web Speech API if available (graceful fallback to text input)
+ * - Replace "fakeAI*" functions with your real AI endpoints later
+ * - Designed to feel futuristic, but run locally in the browser now
+ */
+
+const demoPrompts = [
+  "Design me a lagoon‑style pool with a fire feature, a swim‑up bar, and a shallow sunshelf for kids.",
+  "Create a modern rectangular lap pool about 40ft long with two LED lights, a raised spa, and a pergola.",
+  "I want a natural freeform pool with rock waterfall, tanning ledge, and integrated solar heating.",
+];
+
+export default function VoiceToPoolDemo() {
+  const [listening, setListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const [parsed, setParsed] = useState(null);
+  const [renderSeed, setRenderSeed] = useState(1);
+  const [est, setEst] = useState(null);
+  const [activePrompt, setActivePrompt] = useState(0);
+  const recognitionRef = useRef(null);
+
+  // --- Web Speech API (if available) ---
+  useEffect(() => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recog = new SpeechRecognition();
+      recog.lang = "en-US";
+      recog.continuous = false;
+      recog.interimResults = true;
+      recog.onresult = (e: any) => {
+        let final = "";
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const chunk = e.results[i][0].transcript;
+          if (e.results[i].isFinal) final += chunk;
+        }
+        if (final) setTranscript((prev) => (prev ? prev + " " : "") + final.trim());
+      };
+      recog.onend = () => setListening(false);
+      recognitionRef.current = recog;
+    }
+  }, []);
+
+  function startListening() {
+    if (!recognitionRef.current) return;
+    setTranscript("");
+    setListening(true);
+    recognitionRef.current.start();
+  }
+
+  function stopListening() {
+    recognitionRef.current?.stop();
+  }
+
+  // --- Fake AI: parse prompt into parameters ---
+  function fakeAIParseSpecs(text: string) {
+    const t = text.toLowerCase();
+    const style =
+      t.includes("lagoon") || t.includes("freeform")
+        ? "Freeform / Lagoon"
+        : t.includes("modern") || t.includes("rectangular") || t.includes("lap")
+        ? "Modern Rectangular"
+        : "Classic Family";
+
+    const features: string[] = [];
+    if (/(fire|fire\s?feature|fire\s?pit|fire\s?bowl|fire\s?wall)/.test(t)) features.push("Fire Feature");
+    if (/swim[-\s]?up\s?bar/.test(t)) features.push("Swim‑Up Bar");
+    if (/(sunshelf|tanning\s?ledge|baja\s?shelf)/.test(t)) features.push("Sunshelf");
+    if (/(spa|hot\s?tub)/.test(t)) features.push("Raised Spa");
+    if (/(waterfall|rock\s?waterfall)/.test(t)) features.push("Rock Waterfall");
+    if (/(led|lights?)/.test(t)) features.push("LED Lighting");
+    if (/(pergola|shade)/.test(t)) features.push("Pergola / Shade");
+    if (/(solar|renewable)/.test(t)) features.push("Solar Heating");
+
+    // Size inference
+    const lengthMatch = t.match(/(\d+)(\s?)(ft|feet|')/);
+    const lengthFt = lengthMatch ? parseInt(lengthMatch[1], 10) : style.includes("Rectangular") ? 38 : 32;
+
+    // Safety hints
+    const childFriendly = /(kids|children|family|safety)/.test(t) || features.includes("Sunshelf");
+
+    return {
+      style,
+      features,
+      approxLengthFt: lengthFt,
+      childFriendly,
+      raw: text.trim(),
+    };
+  }
+
+  // --- Fake AI: cost & timeline estimator ---
+  function fakeAICostEstimate(specs: any) {
+    let base = 45000; // base construction
+    if (specs.style.includes("Rectangular")) base += 5000;
+    if (specs.style.includes("Freeform")) base += 8000;
+
+    const add = {
+      "Fire Feature": 6000,
+      "Swim‑Up Bar": 9000,
+      "Sunshelf": 3500,
+      "Raised Spa": 12000,
+      "Rock Waterfall": 8000,
+      "LED Lighting": 1200,
+      "Pergola / Shade": 7000,
+      "Solar Heating": 6000,
+    } as Record<string, number>;
+
+    let featuresCost = 0;
+    specs.features.forEach((f: string) => (featuresCost += add[f] || 0));
+
+    // Size scaling
+    const sizeFactor = Math.max(1, specs.approxLengthFt / 32);
+    const subtotal = Math.round((base + featuresCost) * sizeFactor);
+
+    // Soft costs
+    const design = 1500;
+    const permits = 1200;
+    const contingency = Math.round(subtotal * 0.07);
+
+    const totalLow = subtotal + design + permits;
+    const totalHigh = totalLow + contingency + 5000;
+
+    // Timeline estimate
+    const weeks = 8 + Math.ceil(specs.features.length * 1.2);
+
+    return {
+      lineItems: {
+        base,
+        featuresCost,
+        sizeFactor,
+        design,
+        permits,
+        contingency,
+      },
+      totalLow,
+      totalHigh,
+      timelineWeeks: weeks,
+    };
+  }
+
+  // --- Fake AI: draft plan bullets ---
+  function fakeAIDraftPlans(specs: any) {
+    const bullets = [
+      "Plan View: Pool outline with primary dimensions & depths",
+      "Sections: Shallow, transition, and deep areas",
+      "Hydraulics: Pump, filter, suction/return lines, skimmer locations",
+      "Lighting: LED positions & GFCI notes",
+      "Electrical: Equipment pad layout & conduit paths",
+      "Decking & Coping: Material callouts and expansion joints",
+      "Safety: Barrier, gates, alarms, anti‑entrapment compliance",
+    ];
+    if (specs.features.includes("Raised Spa")) bullets.push("Spa loop: Air/water lines, spillway, heater");
+    if (specs.features.includes("Swim‑Up Bar")) bullets.push("Swim‑up bar: Stools, counter footing, clearances");
+    if (specs.features.includes("Sunshelf")) bullets.push("Sunshelf: Ledge depth & bubblers (optional)");
+    if (specs.features.includes("Fire Feature")) bullets.push("Fire feature: Gas line route & isolation valve");
+    if (specs.features.includes("Solar Heating")) bullets.push("Solar loop: Roof array, check valve, controller");
+    return bullets;
+  }
+
+  function handleInterpret() {
+    if (!transcript.trim()) return;
+    const specs = fakeAIParseSpecs(transcript);
+    setParsed(specs);
+    setEst(fakeAICostEstimate(specs));
+    setRenderSeed((s) => s + 1);
+  }
+
+  function resetAll() {
+    setListening(false);
+    setTranscript("");
+    setParsed(null);
+    setEst(null);
+    setRenderSeed((s) => s + 1);
+  }
+
+  const planBullets = useMemo(() => (parsed ? fakeAIDraftPlans(parsed) : []), [parsed]);
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <Header />
+
+      <main className="mx-auto max-w-6xl px-4 pb-24">
+        {/* Hero */}
+        <section className="mt-10 grid gap-6 md:grid-cols-12">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="md:col-span-7 rounded-2xl bg-white p-6 shadow-sm"
+          >
+            <h1 className="text-3xl font-semibold">Speak Your Pool Into Existence</h1>
+            <p className="mt-2 text-slate-600">
+              Say your vision out loud or type it below. Our demo parses your request,
+              drafts a schematic, estimates cost & timeline, and lists a permit‑ready
+              plan check‑list — all in seconds.
+            </p>
+
+            <div className="mt-4 flex items-center gap-2 text-sm">
+              <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1">
+                <StatusDot active={!!parsed} />
+                Demo Status: {parsed ? "Specs generated" : "Awaiting input"}
+              </span>
+              <button
+                onClick={() => {
+                  setTranscript(demoPrompts[activePrompt]);
+                  setActivePrompt((p) => (p + 1) % demoPrompts.length);
+                }}
+                className="rounded-full bg-slate-900 px-3 py-1 text-white hover:bg-slate-800"
+              >
+                Try an example
+              </button>
+            </div>
+
+            {/* Voice/Text Controls */}
+            <div className="mt-6 grid gap-3">
+              <label className="text-sm font-medium">Your Request</label>
+              <textarea
+                value={transcript}
+                onChange={(e) => setTranscript(e.target.value)}
+                placeholder="e.g., Design me a lagoon‑style pool with a fire feature, a swim‑up bar, and a shallow sunshelf for kids."
+                className="h-28 w-full rounded-xl border border-slate-200 bg-white p-3 focus:border-slate-400 focus:outline-none"
+              />
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={listening ? stopListening : startListening}
+                  disabled={!recognitionRef.current}
+                  className={`rounded-xl px-4 py-2 font-medium text-white ${
+                    listening ? "bg-red-600 hover:bg-red-500" : "bg-slate-900 hover:bg-slate-800"
+                  } disabled:cursor-not-allowed disabled:opacity-50`}
+                >
+                  {recognitionRef.current ? (
+                    listening ? "Stop Recording" : "🎙️ Record Voice"
+                  ) : (
+                    "🎙️ Voice Unavailable"
+                  )}
+                </button>
+
+                <button
+                  onClick={handleInterpret}
+                  className="rounded-xl bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-500"
+                >
+                  Generate Design
+                </button>
+
+                <button
+                  onClick={resetAll}
+                  className="rounded-xl bg-white px-4 py-2 font-medium text-slate-900 shadow-sm hover:bg-slate-50"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="md:col-span-5 rounded-2xl bg-gradient-to-br from-sky-50 to-emerald-50 p-6"
+          >
+            <h2 className="text-xl font-semibold">How it works (today)</h2>
+            <ol className="mt-3 list-decimal space-y-2 pl-5 text-slate-700">
+              <li>Transcribe voice → extract design specs</li>
+              <li>Render quick schematic preview (SVG)</li>
+              <li>Draft construction plan checklist</li>
+              <li>Estimate cost & timeline</li>
+            </ol>
+            <p className="mt-4 text-sm text-slate-600">
+              Replace the fake functions with your AI services to make this production‑grade.
+            </p>
+          </motion.div>
+        </section>
+
+        {/* Output Grid */}
+        <section className="mt-8 grid gap-6 md:grid-cols-12">
+          {/* Schematic Preview */}
+          <Card className="md:col-span-7">
+            <h3 className="text-lg font-semibold">Instant Schematic Preview</h3>
+            <p className="mt-1 text-sm text-slate-600">Not to scale — illustrative only.</p>
+            <div className="mt-4 overflow-hidden rounded-xl border border-slate-200">
+              <SchematicSVG seed={renderSeed} specs={parsed} />
+            </div>
+          </Card>
+
+          {/* Specs & Plan Draft */}
+          <Card className="md:col-span-5">
+            <h3 className="text-lg font-semibold">Interpreted Specs</h3>
+            {!parsed ? (
+              <EmptyState note="Generate a design to see parsed specs." />
+            ) : (
+              <div className="mt-3 space-y-2 text-sm">
+                <Row label="Style" value={parsed.style} />
+                <Row label="Approx. Length" value={`${parsed.approxLengthFt} ft`} />
+                <Row label="Features" value={parsed.features.join(", ") || "—"} />
+                <Row label="Child‑Friendly" value={parsed.childFriendly ? "Yes" : "Potential hazards (add safety)"} />
+                <div className="mt-4">
+                  <div className="text-sm font-medium">Preliminary Plan Checklist</div>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-700">
+                    {planBullets.map((b, i) => (
+                      <li key={i}>{b}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </Card>
+        </section>
+
+        {/* Estimator & CTAs */}
+        <section className="mt-6 grid gap-6 md:grid-cols-12">
+          <Card className="md:col-span-7">
+            <h3 className="text-lg font-semibold">Cost & Timeline</h3>
+            {!est ? (
+              <EmptyState note="Generate a design to see estimates." />
+            ) : (
+              <div className="mt-3 text-sm">
+                <div className="grid grid-cols-2 gap-4">
+                  <MiniStat label="Base + Features (scaled)" value={`× ${est.lineItems.sizeFactor.toFixed(2)}`} />
+                  <MiniStat label="Features Cost" value={`$${est.lineItems.featuresCost.toLocaleString()}`} />
+                  <MiniStat label="Design" value={`$${est.lineItems.design.toLocaleString()}`} />
+                  <MiniStat label="Permits" value={`$${est.lineItems.permits.toLocaleString()}`} />
+                  <MiniStat label="Contingency" value={`$${est.lineItems.contingency.toLocaleString()}`} />
+                </div>
+                <div className="mt-4 rounded-xl bg-slate-900 p-4 text-white">
+                  <div className="text-sm uppercase tracking-wide text-slate-300">Estimated Range</div>
+                  <div className="mt-1 text-2xl font-semibold">
+                    ${est.totalLow.toLocaleString()} – ${est.totalHigh.toLocaleString()}
+                  </div>
+                  <div className="mt-2 text-sm text-slate-300">Projected build time: ~{est.timelineWeeks} weeks</div>
+                </div>
+              </div>
+            )}
+          </Card>
+
+          <Card className="md:col-span-5">
+            <h3 className="text-lg font-semibold">Next Steps</h3>
+            <div className="mt-3 grid gap-3">
+              <button className="rounded-xl bg-white px-4 py-3 text-left font-medium text-slate-900 shadow-sm hover:bg-slate-50">
+                ✏️ Refine Design (add/remove features)
+              </button>
+              <button className="rounded-xl bg-white px-4 py-3 text-left font-medium text-slate-900 shadow-sm hover:bg-slate-50">
+                💾 Save & Share (email/link)
+              </button>
+              <button className="rounded-xl bg-emerald-600 px-4 py-3 text-left font-medium text-white hover:bg-emerald-500">
+                🤝 Request Contractor Match
+              </button>
+              <p className="text-xs text-slate-500">
+                *Preliminary outputs for concept only. Final construction plans require licensed professional review and local code compliance.
+              </p>
+            </div>
+          </Card>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
+
+// ---------------- UI Helpers ----------------
+function Header() {
+  return (
+    <header className="border-b border-slate-200 bg-white/70 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-sky-400 to-emerald-400" />
+          <div>
+            <div className="text-sm font-semibold tracking-tight">PoolDesignConsultant.com</div>
+            <div className="text-xs text-slate-500">Voice‑to‑Pool AI Demo</div>
+          </div>
+        </div>
+        <a
+          href="#"
+          className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+        >
+          Explore Tools
+        </a>
+      </div>
+    </header>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="mt-16 border-t border-slate-200 bg-white/60 py-8">
+      <div className="mx-auto max-w-6xl px-4 text-sm text-slate-500">
+        <div className="font-medium text-slate-700">Positioning</div>
+        <p className="mt-1 max-w-3xl">
+          PoolDesignConsultant.com isn’t just a design tool. It’s the future of pool building —
+          from the first sketch to a living, connected backyard oasis.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`rounded-2xl bg-white p-6 shadow-sm ${className}`}>{children}</div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-3 items-start gap-3 rounded-xl border border-slate-100 p-3">
+      <div className="col-span-1 text-xs font-medium uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="col-span-2 text-sm">{value}</div>
+    </div>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-slate-200 p-3">
+      <div className="text-xs uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="mt-1 text-lg font-semibold">{value}</div>
+    </div>
+  );
+}
+
+function EmptyState({ note }: { note: string }) {
+  return (
+    <div className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-slate-500">
+      {note}
+    </div>
+  );
+}
+
+function StatusDot({ active = false }: { active?: boolean }) {
+  return (
+    <span
+      className={`inline-block h-2.5 w-2.5 rounded-full ${active ? "bg-emerald-500" : "bg-slate-300"}`}
+      aria-label={active ? "active" : "inactive"}
+    />
+  );
+}
+
+// ---------------- Visual Schematic ----------------
+/**
+ * SchematicSVG renders a playful top‑down pool preview based on parsed specs.
+ * This is NOT to scale; it’s an immediate visual that updates with the prompt.
+ */
+function SchematicSVG({ seed, specs }: { seed: number; specs: any }) {
+  const width = 900;
+  const height = 520;
+  const w = width;
+  const h = height;
+
+  // derive geometry from specs
+  const rect = specs?.style?.includes("Rectangular");
+  const len = specs?.approxLengthFt || 32;
+  const pxLen = 420 + Math.min(180, (len - 32) * 6); // playful scale
+
+  // colors
+  const water = "#7fd2e7";
+  const waterDark = "#5bbdd4";
+  const deck = "#e8e5e5";
+  const grass = "#cae7c9";
+  const accent = "#f6c453"; // fire
+
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} xmlns="http://www.w3.org/2000/svg" className="block w-full">
+      {/* yard background */}
+      <rect x={0} y={0} width={w} height={h} fill={grass} />
+
+      {/* deck area */}
+      <rect x={40} y={40} width={w - 80} height={h - 80} rx={24} fill={deck} />
+
+      {/* pool shape */}
+      {rect ? (
+        <g>
+          <rect
+            x={(w - pxLen) / 2}
+            y={140}
+            width={pxLen}
+            height={180}
+            rx={20}
+            fill={water}
+            stroke={waterDark}
+            strokeWidth={6}
+          />
+        </g>
+      ) : (
+        <g>
+          {/* freeform lagoon path */}
+          <path
+            d={`M ${w / 2 - pxLen /
