@@ -63,8 +63,19 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 5000;
+
   app.listen(PORT, () => {
-    log(`serving on port http://localhost:${PORT}`);
+    console.log(`✅ Express server running on http://localhost:${PORT}`);
   });
+
+  // Optional: handle errors like port in use
+  app.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use. Choose a different port or stop the other process.`);
+    } else {
+      console.error(err);
+    }
+  });
+
 })();
